@@ -45,15 +45,20 @@ if($result = mysqli_query($link, $sql)){
 </head>
 <body>
     <div class="container">
-        <div class="page-header">
+        <nav>
+            <a href="admin_dashboard.php">User Management</a>
+            <a href="manage_zoning.php">Zoning Certificates</a>
+            <!-- <a href="manage_locational.php">Locational Clearances</a> -->
+            <a href="logout.php" style="float:right; margin-right:20px;">Sign Out</a>
+        </nav>
+        <div class="page-header" style="margin-top: 20px;">
             <h1>Hi, <b><?php echo htmlspecialchars($_SESSION["username"]); ?></b>. Welcome to the Admin Dashboard.</h1>
-            <a href="logout.php" class="btn btn-danger">Sign Out</a>
         </div>
 
         <h2>Manage Users</h2>
 
         <h3>Add New User</h3>
-        <form action="add_user.php" method="post" class="wrapper" style="width:auto; margin-bottom: 20px;">
+        <form action="add_user.php" method="post" class="wrapper" style="width:auto; margin-bottom: 20px; background-color: #f9f9f9; padding: 15px;">
             <div class="form-group">
                 <label>Username</label>
                 <input type="text" name="username" class="form-control" required>
