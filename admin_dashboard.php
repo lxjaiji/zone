@@ -48,7 +48,7 @@ if($result = mysqli_query($link, $sql)){
         <nav>
             <a href="admin_dashboard.php">User Management</a>
             <a href="manage_zoning.php">Zoning Certificates</a>
-            <!-- <a href="manage_locational.php">Locational Clearances</a> -->
+            <a href="manage_locational.php">Locational Clearances</a>
             <a href="logout.php" style="float:right; margin-right:20px;">Sign Out</a>
         </nav>
         <div class="page-header" style="margin-top: 20px;">

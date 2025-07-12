@@ -65,15 +65,21 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                                 $_SESSION["loggedin"] = true;
                                 $_SESSION["id"] = $id;
                                 $_SESSION["username"] = $username;
-                                $_SESSION["is_admin"] = true;
+                                $_SESSION["is_admin"] = (bool)$is_admin; // Ensure it's a boolean
 
-                                // Redirect user to admin dashboard page
-                                header("location: admin_dashboard.php");
+                                // Redirect user based on admin status
+                                if($_SESSION["is_admin"]){
+                                    header("location: admin_dashboard.php");
+                                } else {
+                                    // Redirect non-admin user to their dashboard (to be created)
+                                    header("location: user_dashboard.php");
+                                }
                             } else {
-                                $login_err = "You do not have admin privileges.";
+                                // Password is not valid (this comparison needs to be password_verify in production)
+                                $login_err = "Invalid username or password.";
                             }
                         } else{
-                            // Password is not valid
+                            // Password is not valid (this comparison needs to be password_verify in production)
                             $login_err = "Invalid username or password.";
                         }
                     }
@@ -101,9 +107,22 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     <meta charset="UTF-8">
     <title>Admin Login</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        .logo-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .logo-container img {
+            max-width: 120px; /* Adjust as needed */
+        }
+    </style>
 </head>
 <body>
     <div class="wrapper">
+        <div class="logo-container">
+            <!-- Placeholder for logo - User will replace 'logo_placeholder.png' -->
+            <img src="logo_placeholder.png" alt="System Logo">
+        </div>
         <h2>Admin Login</h2>
         <p>Please fill in your credentials to login.</p>
 

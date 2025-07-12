@@ -89,14 +89,23 @@ if ($certificate === null) {
 </head>
 <body>
     <div class="container">
-        <?php if(isset($_SESSION["is_admin"]) && $_SESSION["is_admin"] === true): ?>
+        <?php
+        // Determine if admin or regular user for navigation and controls
+        $is_admin_view = isset($_SESSION["is_admin"]) && $_SESSION["is_admin"] === true;
+        ?>
         <nav>
-            <a href="admin_dashboard.php">User Management</a>
-            <a href="manage_zoning.php">Zoning Certificates</a>
-            <!-- <a href="manage_locational.php">Locational Clearances</a> -->
+            <?php if($is_admin_view): ?>
+                <a href="admin_dashboard.php">User Management</a>
+                <a href="manage_zoning.php">Zoning Certificates</a>
+                <a href="manage_locational.php">Locational Clearances</a>
+            <?php else: ?>
+                <!-- Navigation for regular user, if any. Can link back to their dashboard -->
+                <a href="user_dashboard.php">My Dashboard</a>
+                <a href="manage_zoning_user.php">Zoning Certificates</a>
+                <a href="manage_locational_user.php">Locational Clearances</a>
+            <?php endif; ?>
             <a href="logout.php" style="float:right; margin-right:20px;">Sign Out</a>
         </nav>
-        <?php endif; ?>
 
         <div class="wrapper">
             <div style="display:flex; justify-content:space-between; align-items:center;">
@@ -130,9 +139,11 @@ if ($certificate === null) {
             </div>
 
             <div class="actions">
-                <?php if(isset($_SESSION["is_admin"]) && $_SESSION["is_admin"] === true): ?>
-                    <a href="manage_zoning.php" class="btn btn-back">Back to List</a>
+                <?php if($is_admin_view): ?>
+                    <a href="manage_zoning.php" class="btn btn-back">Back to Admin List</a>
                     <a href="edit_zoning.php?id=<?php echo $id; ?>" class="btn btn-edit">Edit</a>
+                <?php else: ?>
+                    <a href="manage_zoning_user.php" class="btn btn-back">Back to List</a>
                 <?php endif; ?>
                 <a href="print_zoning.php?id=<?php echo $id; ?>" target="_blank" class="btn btn-print">Print Certificate</a>
             </div>

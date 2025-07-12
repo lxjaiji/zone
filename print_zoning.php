@@ -2,12 +2,10 @@
 // Initialize the session
 session_start();
 
-// Check if the user is logged in (admin or potentially regular user later)
+// Check if the user is logged in. Both admin and regular users can print.
 if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true ){
-    // For now, redirect non-admins or non-logged-in users to login.
-    // This logic will need refinement when regular user roles are fully implemented.
      $_SESSION['error'] = "You need to be logged in to print this page.";
-     header("location: login.php"); // Or a generic access denied page
+     header("location: login.php");
      exit;
 }
 
