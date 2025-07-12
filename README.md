@@ -1,0 +1,1 @@
+This is a sample of a zoning and locational clearance system for LGU with the help of jules. You can edit as you want and add features. This is the common certificate that you can prin directly and save on your database
