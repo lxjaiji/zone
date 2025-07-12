@@ -2,8 +2,10 @@
 // Initialize the session
 session_start();
 
-// Check if the user is logged in and is an admin, otherwise redirect to login page
-if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true || !isset($_SESSION["is_admin"]) || $_SESSION["is_admin"] !== true){
+// Check if the user is logged in. Any logged-in user can add a certificate.
+if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
+    // If not logged in, redirect to login page
+    $_SESSION['error'] = "You must be logged in to encode a certificate.";
     header("location: login.php");
     exit;
 }
@@ -133,7 +135,12 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 
             if(mysqli_stmt_execute($stmt)){
                 $_SESSION['message'] = "Zoning Certificate (".$certificate_number.") added successfully!";
-                header("location: manage_zoning.php");
+                // Redirect based on user role
+                if (isset($_SESSION['is_admin']) && $_SESSION['is_admin'] === true) {
+                    header("location: manage_zoning.php");
+                } else {
+                    header("location: manage_zoning_user.php");
+                }
                 exit;
             } else {
                 $_SESSION['error'] = "Oops! Something went wrong. Please try again later. Error: " . mysqli_error($link);

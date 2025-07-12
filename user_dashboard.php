@@ -77,17 +77,23 @@ $username = htmlspecialchars($_SESSION["username"]);
             font-size: 0.9em;
             margin-bottom: 15px;
         }
-        .dashboard-link-card a.btn-view {
+        .dashboard-link-card .actions-group {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+        .dashboard-link-card a.btn-action {
             text-decoration: none;
-            background-color: #007bff;
             color: white;
             padding: 10px 20px;
             border-radius: 4px;
             transition: background-color 0.3s ease;
         }
-        .dashboard-link-card a.btn-view:hover {
-            background-color: #0056b3;
-        }
+        .btn-view { background-color: #007bff; }
+        .btn-view:hover { background-color: #0056b3; }
+        .btn-add { background-color: #28a745; }
+        .btn-add:hover { background-color: #218838; }
+
     </style>
 </head>
 <body>
@@ -95,23 +101,26 @@ $username = htmlspecialchars($_SESSION["username"]);
         <div class="dashboard-header">
             <a href="logout.php" class="logout-btn">Sign Out</a>
             <h1>Welcome, <?php echo $username; ?>!</h1>
-            <p>This is your personal dashboard to view certificates and clearances.</p>
+            <p>This is your personal dashboard to encode, view, and print certificates and clearances.</p>
         </div>
 
         <div class="dashboard-links">
             <div class="dashboard-link-card">
                 <h3>Zoning Certificates</h3>
-                <p>View and print your Zoning Certificates.</p>
-                <!-- This will eventually link to a page that lists certificates accessible to this user -->
-                <!-- For now, it can link to manage_zoning.php which will need to be adapted for user view -->
-                <a href="manage_zoning_user.php" class="btn-view">View Zoning Certificates</a>
+                <p>Encode a new certificate or view existing ones.</p>
+                <div class="actions-group">
+                    <a href="add_zoning.php" class="btn-action btn-add">Encode New</a>
+                    <a href="manage_zoning_user.php" class="btn-action btn-view">View List</a>
+                </div>
             </div>
 
             <div class="dashboard-link-card">
                 <h3>Locational Clearances</h3>
-                <p>View and print your Locational Clearances.</p>
-                <!-- Similar to above, this will link to a user-specific list page -->
-                <a href="manage_locational_user.php" class="btn-view">View Locational Clearances</a>
+                <p>Encode a new clearance or view existing ones.</p>
+                 <div class="actions-group">
+                    <a href="add_locational.php" class="btn-action btn-add">Encode New</a>
+                    <a href="manage_locational_user.php" class="btn-action btn-view">View List</a>
+                </div>
             </div>
         </div>
 

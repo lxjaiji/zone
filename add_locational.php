@@ -2,8 +2,10 @@
 // Initialize the session
 session_start();
 
-// Check if the user is logged in and is an admin, otherwise redirect to login page
-if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true || !isset($_SESSION["is_admin"]) || $_SESSION["is_admin"] !== true){
+// Check if the user is logged in. Any logged-in user can add a clearance.
+if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
+    // If not logged in, redirect to login page
+    $_SESSION['error'] = "You must be logged in to encode a clearance.";
     header("location: login.php");
     exit;
 }
@@ -116,7 +118,12 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 
             if(mysqli_stmt_execute($stmt)){
                 $_SESSION['message'] = "Locational Clearance (".$clearance_number.") added successfully!";
-                header("location: manage_locational.php");
+                // Redirect based on user role
+                if (isset($_SESSION['is_admin']) && $_SESSION['is_admin'] === true) {
+                    header("location: manage_locational.php");
+                } else {
+                    header("location: manage_locational_user.php");
+                }
                 exit;
             } else {
                 $_SESSION['error'] = "Database execution error: " . mysqli_stmt_error($stmt);
