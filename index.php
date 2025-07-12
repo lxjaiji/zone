@@ -2,6 +2,22 @@
 // Check if user is already logged in and redirect accordingly
 session_start();
 
+// Include config file to get database connection
+require_once "config.php";
+
+// Fetch the municipality logo path
+$logo_path = 'logo_placeholder.png'; // Default
+$sql_logo = "SELECT setting_value FROM settings WHERE setting_key = 'municipality_logo_path' LIMIT 1";
+if($result_logo = mysqli_query($link, $sql_logo)){
+    if(mysqli_num_rows($result_logo) == 1){
+        $row_logo = mysqli_fetch_assoc($result_logo);
+        $logo_path = $row_logo['setting_value'];
+    }
+}
+// It's okay to close the connection here as it's only needed for the logo path
+mysqli_close($link);
+
+
 if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
     if(isset($_SESSION["is_admin"]) && $_SESSION["is_admin"] === true){
         header("location: admin_dashboard.php");
@@ -73,8 +89,7 @@ if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
 <body>
     <div class="landing-container">
         <div class="logo-container">
-            <!-- Placeholder for logo - User will replace 'logo_placeholder.png' -->
-            <img src="logo_placeholder.png" alt="System Logo">
+            <img src="<?php echo htmlspecialchars($logo_path); ?>?t=<?php echo time(); ?>" alt="System Logo">
         </div>
         <h1>Zoning and Locational Clearance System</h1>
         <p>Manage and track your applications efficiently.</p>

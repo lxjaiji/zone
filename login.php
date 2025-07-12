@@ -11,6 +11,17 @@ if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true && isset($_SES
 // Include config file
 require_once "config.php";
 
+// Fetch the municipality logo path
+$logo_path_login = 'logo_placeholder.png'; // Default
+$sql_logo_login = "SELECT setting_value FROM settings WHERE setting_key = 'municipality_logo_path' LIMIT 1";
+if($result_logo_login = mysqli_query($link, $sql_logo_login)){
+    if(mysqli_num_rows($result_logo_login) == 1){
+        $row_logo_login = mysqli_fetch_assoc($result_logo_login);
+        $logo_path_login = $row_logo_login['setting_value'];
+    }
+}
+// Do not close the connection here as it's needed for the login logic below
+
 // Define variables and initialize with empty values
 $username = $password = "";
 $username_err = $password_err = $login_err = "";
@@ -120,8 +131,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 <body>
     <div class="wrapper">
         <div class="logo-container">
-            <!-- Placeholder for logo - User will replace 'logo_placeholder.png' -->
-            <img src="logo_placeholder.png" alt="System Logo">
+            <img src="<?php echo htmlspecialchars($logo_path_login); ?>?t=<?php echo time(); ?>" alt="System Logo">
         </div>
         <h2>Admin Login</h2>
         <p>Please fill in your credentials to login.</p>
