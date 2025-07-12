@@ -50,6 +50,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     // Check input errors before inserting in database
     if(empty($username_err) && empty($password_err)){
         // Determine the admin status from the checkbox
+        $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+        
         $is_admin = isset($_POST['is_admin']) && $_POST['is_admin'] == '1' ? 1 : 0;
 
         // Prepare an insert statement
@@ -63,7 +65,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 
             // Set parameters
             $param_username = $username;
-            $param_password = $password; // Store plain password for now. Replace with $hashed_password
+            $param_password = $hash_password; // Store plain password for now. Replace with $hashed_password
             $param_is_admin = $is_admin;
 
             // Attempt to execute the prepared statement
