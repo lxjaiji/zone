@@ -57,6 +57,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         // Prepare an insert statement
         // In a real application, you MUST hash the password.
         // $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+        $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+        
         $sql = "INSERT INTO users (username, password, is_admin) VALUES (?, ?, ?)";
 
         if($stmt = mysqli_prepare($link, $sql)){
