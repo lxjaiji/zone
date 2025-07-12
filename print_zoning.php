@@ -11,6 +11,19 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true ){
 
 require_once "config.php";
 
+// Function to fetch all settings into an associative array
+function get_all_settings($link) {
+    $settings_data = [];
+    $sql = "SELECT setting_key, setting_value FROM settings";
+    if ($result = mysqli_query($link, $sql)) {
+        while ($row = mysqli_fetch_assoc($result)) {
+            $settings_data[$row['setting_key']] = $row['setting_value'];
+        }
+    }
+    return $settings_data;
+}
+
+$app_settings = get_all_settings($link);
 $certificate = null;
 $id = 0;
 
@@ -146,15 +159,22 @@ function formatDate($dateStr) {
 </head>
 <body onload="window.print();">
     <div class="print-container">
-        <div class="header-section">
-            <!-- <img src="path/to/your/logo.png" alt="Logo" class="logo"> -->
-            <p>Republic of the Philippines</p>
-            <p>Province of [Your Province]</p>
-            <p>Municipality/City of [Your Municipality/City]</p>
-            <h3>OFFICE OF THE ZONING ADMINISTRATOR</h3>
-            <hr>
-            <h1>ZONING CERTIFICATE</h1>
+        <div class="header-section" style="display: flex; justify-content: space-between; align-items: center; text-align:center; flex-wrap:wrap;">
+            <div style="flex-basis: 20%; text-align: left;">
+                <img src="<?php echo htmlspecialchars($app_settings['province_logo_path'] ?? ''); ?>" alt="Province Logo" class="logo">
+            </div>
+            <div style="flex-basis: 60%;">
+                <p>Republic of the Philippines</p>
+                <p>Province of <?php echo htmlspecialchars($app_settings['province_name'] ?? '[Province Name]'); ?></p>
+                <p>Municipality of <?php echo htmlspecialchars($app_settings['municipality_name'] ?? '[Municipality Name]'); ?></p>
+                <h3 style="margin-top:10px;">OFFICE OF THE ZONING ADMINISTRATOR</h3>
+            </div>
+            <div style="flex-basis: 20%; text-align: right;">
+                 <img src="<?php echo htmlspecialchars($app_settings['municipality_logo_path'] ?? ''); ?>" alt="Municipality Logo" class="logo">
+            </div>
         </div>
+        <hr style="border-top: 2px solid #000; margin-bottom: 20px;">
+        <h1 style="text-align:center;">ZONING CERTIFICATE</h1>
 
         <p style="text-align:right;">Certificate No.: <strong><?php echo htmlspecialchars($certificate['certificate_number']); ?></strong></p>
         <p style="text-align:right;">Date Issued: <?php echo formatDate($certificate['issue_date']); ?></p>
@@ -195,7 +215,7 @@ function formatDate($dateStr) {
 
 
         <div class="footer-section">
-            <p>Issued this <?php echo date("jS", strtotime($certificate['issue_date'])); ?> day of <?php echo date("F, Y", strtotime($certificate['issue_date'])); ?> at [Your Municipality/City], [Your Province].</p>
+            <p>Issued this <?php echo date("jS", strtotime($certificate['issue_date'])); ?> day of <?php echo date("F, Y", strtotime($certificate['issue_date'])); ?> at <?php echo htmlspecialchars($app_settings['municipality_name'] ?? '[Municipality Name]'); ?>, <?php echo htmlspecialchars($app_settings['province_name'] ?? '[Province Name]'); ?>.</p>
 
             <div style="margin-top: 80px; text-align: right; padding-right: 50px;">
                  <div class="signature-line" style="margin: 0 0 0 auto;"></div>

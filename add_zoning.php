@@ -204,9 +204,14 @@ $zoning_classifications = ['Residential', 'Commercial', 'Agro-Industrial', 'Agri
 <body>
     <div class="container">
         <nav>
-            <a href="admin_dashboard.php">User Management</a>
-            <a href="manage_zoning.php">Zoning Certificates</a>
-            <a href="manage_locational.php">Locational Clearances</a>
+            <?php if(isset($_SESSION['is_admin']) && $_SESSION['is_admin'] === true): ?>
+                <a href="admin_dashboard.php">User Management</a>
+                <a href="manage_zoning.php">Zoning Certificates</a>
+                <a href="manage_locational.php">Locational Clearances</a>
+                <a href="settings.php">Settings</a>
+            <?php else: ?>
+                <a href="user_dashboard.php">My Dashboard</a>
+            <?php endif; ?>
             <a href="logout.php" style="float:right; margin-right:20px;">Sign Out</a>
         </nav>
 

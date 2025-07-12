@@ -235,6 +235,7 @@ $condition_texts = [
             <a href="admin_dashboard.php">User Management</a>
             <a href="manage_zoning.php">Zoning Certificates</a>
             <a href="manage_locational.php">Locational Clearances</a>
+            <a href="settings.php">Settings</a>
             <a href="logout.php" style="float:right; margin-right:20px;">Sign Out</a>
         </nav>
 

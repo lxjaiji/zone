@@ -11,6 +11,19 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true ){
 
 require_once "config.php";
 
+// Function to fetch all settings into an associative array
+function get_all_settings($link) {
+    $settings_data = [];
+    $sql = "SELECT setting_key, setting_value FROM settings";
+    if ($result = mysqli_query($link, $sql)) {
+        while ($row = mysqli_fetch_assoc($result)) {
+            $settings_data[$row['setting_key']] = $row['setting_value'];
+        }
+    }
+    return $settings_data;
+}
+
+$app_settings = get_all_settings($link);
 $clearance = null;
 $id = 0;
 $conditions_data = [];
@@ -113,15 +126,22 @@ $condition_texts_print = [
 </head>
 <body onload="window.print();">
     <div class="print-container">
-        <div class="header-section">
-            <!-- User should customize LGU details -->
-            <p>Republic of the Philippines</p>
-            <p>Province of [YOUR PROVINCE]</p>
-            <p>Municipality/City of [YOUR MUNICIPALITY/CITY]</p>
-            <p>OFFICE OF THE MUNICIPAL PLANNING AND DEVELOPMENT COORDINATOR / ZONING ADMINISTRATOR</p>
-            <hr style="border-top: 1px solid #000; margin-top:10px; margin-bottom:10px;">
-            <h2>LOCATIONAL CLEARANCE</h2>
+        <div class="header-section" style="display: flex; justify-content: space-between; align-items: center; text-align:center; flex-wrap:wrap;">
+            <div style="flex-basis: 20%; text-align: left;">
+                <img src="<?php echo htmlspecialchars($app_settings['province_logo_path'] ?? ''); ?>" alt="Province Logo" class="logo" style="max-height:80px;">
+            </div>
+            <div style="flex-basis: 60%;">
+                <p>Republic of the Philippines</p>
+                <p>Province of <?php echo htmlspecialchars($app_settings['province_name'] ?? '[Province Name]'); ?></p>
+                <p>Municipality of <?php echo htmlspecialchars($app_settings['municipality_name'] ?? '[Municipality Name]'); ?></p>
+                <p style="font-size:11pt; font-weight:bold; margin-top:5px;">OFFICE OF THE MUNICIPAL PLANNING AND DEVELOPMENT COORDINATOR / ZONING ADMINISTRATOR</p>
+            </div>
+            <div style="flex-basis: 20%; text-align: right;">
+                 <img src="<?php echo htmlspecialchars($app_settings['municipality_logo_path'] ?? ''); ?>" alt="Municipality Logo" class="logo" style="max-height:80px;">
+            </div>
         </div>
+        <hr style="border-top: 2px solid #000; margin-bottom: 20px;">
+        <h2 style="text-align:center;">LOCATIONAL CLEARANCE</h2>
 
         <div class="content-section">
             <p class="text-right">LC No.: <span class="bold"><?php echo htmlspecialchars($clearance['clearance_number']); ?></span></p>
@@ -171,7 +191,7 @@ $condition_texts_print = [
         </div>
 
         <div class="footer-section">
-             <p>Issued this <?php echo date("jS", strtotime($clearance['issue_date'])); ?> day of <?php echo date("F, Y", strtotime($clearance['issue_date'])); ?> at [Your Municipality/City], [Your Province].</p>
+             <p>Issued this <?php echo date("jS", strtotime($clearance['issue_date'])); ?> day of <?php echo date("F, Y", strtotime($clearance['issue_date'])); ?> at <?php echo htmlspecialchars($app_settings['municipality_name'] ?? '[Municipality Name]'); ?>, <?php echo htmlspecialchars($app_settings['province_name'] ?? '[Province Name]'); ?>.</p>
             <div class="signature-block">
                 <div class="signature-line"></div>
                 <p class="signature-name text-center"><?php echo strtoupper(htmlspecialchars($clearance['signatory_name'] ?: '[SIGNATORY NAME]')); ?></p>
