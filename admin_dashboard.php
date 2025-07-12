@@ -94,6 +94,7 @@ if($result = mysqli_query($link, $sql)){
                     <td><?php echo $user['id']; ?></td>
                     <td><?php echo htmlspecialchars($user['username']); ?></td>
                     <td class="action-links">
+                        <a href="edit_user.php?id=<?php echo $user['id']; ?>">Edit</a>
                         <a href="#" onclick="confirmDelete(<?php echo $user['id']; ?>); return false;" class="delete">Delete</a>
                     </td>
                 </tr>

@@ -63,7 +63,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 
             // Set parameters
             $param_username = $username;
-            $param_password = $hash_password; // Store plain password for now. Replace with $hashed_password
+            $param_password = $password; // Store plain password for now. Replace with $hashed_password
             $param_is_admin = $is_admin;
 
             // Attempt to execute the prepared statement
