@@ -68,6 +68,12 @@ if($result = mysqli_query($link, $sql)){
                 <input type="password" name="password" class="form-control" required>
             </div>
             <div class="form-group">
+                <label for="is_admin_checkbox">
+                    <input type="checkbox" name="is_admin" id="is_admin_checkbox" value="1">
+                    Make this user an Administrator
+                </label>
+            </div>
+            <div class="form-group">
                 <input type="submit" class="btn btn-primary" value="Add User">
             </div>
         </form>

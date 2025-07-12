@@ -49,18 +49,22 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 
     // Check input errors before inserting in database
     if(empty($username_err) && empty($password_err)){
+        // Determine the admin status from the checkbox
+        $is_admin = isset($_POST['is_admin']) && $_POST['is_admin'] == '1' ? 1 : 0;
+
         // Prepare an insert statement
         // In a real application, you MUST hash the password.
         // $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-        $sql = "INSERT INTO users (username, password, is_admin) VALUES (?, ?, FALSE)";
+        $sql = "INSERT INTO users (username, password, is_admin) VALUES (?, ?, ?)";
 
         if($stmt = mysqli_prepare($link, $sql)){
             // Bind variables to the prepared statement as parameters
-            mysqli_stmt_bind_param($stmt, "ss", $param_username, $param_password);
+            mysqli_stmt_bind_param($stmt, "ssi", $param_username, $param_password, $param_is_admin);
 
             // Set parameters
             $param_username = $username;
             $param_password = $password; // Store plain password for now. Replace with $hashed_password
+            $param_is_admin = $is_admin;
 
             // Attempt to execute the prepared statement
             if(mysqli_stmt_execute($stmt)){
