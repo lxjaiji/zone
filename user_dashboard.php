@@ -104,6 +104,17 @@ $username = htmlspecialchars($_SESSION["username"]);
             <p>This is your personal dashboard to encode, view, and print certificates and clearances.</p>
         </div>
 
+        <div class="search-bar-container wrapper" style="width:auto; margin: 20px auto; background-color: #fff; padding: 15px; border: 1px solid #ddd; max-width: 80%;">
+             <form action="search_results.php" method="get" style="display:flex; gap:10px;">
+                <div class="form-group" style="flex-grow:1; margin-bottom:0;">
+                    <input type="text" name="query" class="form-control" placeholder="Search by name, classification, zone, or location..." required>
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                    <input type="submit" class="btn btn-primary" value="Search">
+                </div>
+            </form>
+        </div>
+
         <div class="dashboard-links">
             <div class="dashboard-link-card">
                 <h3>Zoning Certificates</h3>

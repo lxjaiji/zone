@@ -56,6 +56,17 @@ if($result = mysqli_query($link, $sql)){
             <h1>Hi, <b><?php echo htmlspecialchars($_SESSION["username"]); ?></b>. Welcome to the Admin Dashboard.</h1>
         </div>
 
+        <div class="search-bar-container wrapper" style="width:auto; margin-bottom: 20px; background-color: #f9f9f9; padding: 15px;">
+             <form action="search_results.php" method="get">
+                <div class="form-group">
+                    <input type="text" name="query" class="form-control" placeholder="Search by name, classification, zone, or location..." required>
+                </div>
+                <div class="form-group">
+                    <input type="submit" class="btn btn-primary" value="Search">
+                </div>
+            </form>
+        </div>
+
         <h2>Manage Users</h2>
 
         <h3>Add New User</h3>
