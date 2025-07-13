@@ -119,19 +119,15 @@ function formatDate($dateStr) {
             margin-top: 40px;
             padding-top: 20px;
             border-top: 1px solid #000;
-            text-align: center; /* Or specific signature lines */
         }
-        .signature-area {
-            margin-top: 60px;
-            display: flex;
-            justify-content: space-around; /* For multiple signatures */
+        .signature-block {
+             width: 300px; /* Define a width for the block */
+             margin: 60px auto 0 auto; /* Center the block itself */
+             text-align: center;
         }
         .signature-line {
             border-top: 1px solid #000;
-            width: 250px; /* Adjust width as needed */
-            margin: 0 auto; /* Center single line */
-            margin-top: 5px; /* Space above name */
-            text-align: center;
+            margin-bottom: 5px;
         }
         .signature-name {
             margin-top: 5px;
@@ -215,12 +211,12 @@ function formatDate($dateStr) {
 
 
         <div class="footer-section">
-            <p>Issued this <?php echo date("jS", strtotime($certificate['issue_date'])); ?> day of <?php echo date("F, Y", strtotime($certificate['issue_date'])); ?> at <?php echo htmlspecialchars($app_settings['municipality_name'] ?? '[Municipality Name]'); ?>, <?php echo htmlspecialchars($app_settings['province_name'] ?? '[Province Name]'); ?>.</p>
+            <p style="text-align:center;">Issued this <?php echo date("jS", strtotime($certificate['issue_date'])); ?> day of <?php echo date("F, Y", strtotime($certificate['issue_date'])); ?> at <?php echo htmlspecialchars($app_settings['municipality_name'] ?? '[Municipality Name]'); ?>, <?php echo htmlspecialchars($app_settings['province_name'] ?? '[Province Name]'); ?>.</p>
 
-            <div style="margin-top: 80px; text-align: right; padding-right: 50px;">
-                 <div class="signature-line" style="margin: 0 0 0 auto;"></div>
-                 <p class="signature-name" style="text-align:center;">[ZONING ADMINISTRATOR'S NAME]</p>
-                 <p style="text-align:center;">Zoning Administrator</p>
+            <div class="signature-block">
+                 <div class="signature-line"></div>
+                 <p class="signature-name">[ZONING ADMINISTRATOR'S NAME]</p>
+                 <p class="signature-title">Zoning Administrator</p>
             </div>
         </div>
 

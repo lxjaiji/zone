@@ -113,10 +113,17 @@ $condition_texts_print = [
         .conditions-list li { margin-bottom: 5px; display: flex; }
         .conditions-list .condition-marker { margin-right: 8px; font-weight: bold; } /* For ✓ or ✗ */
         .footer-section { margin-top: 30px; padding-top: 15px; /*border-top: 1px solid #555;*/ }
-        .signature-block { margin-top: 50px; text-align: right; padding-right:30px;}
-        .signature-line { border-top: 1px solid #000; width: 280px; margin: 40px 0 5px auto; }
-        .signature-name { font-weight: bold; text-align: center; }
-        .signature-title { text-align: center; font-size:10pt; }
+        .signature-block {
+             width: 300px; /* Define a width for the block */
+             margin: 60px auto 0 auto; /* Center the block itself */
+             text-align: center;
+        }
+        .signature-line {
+            border-top: 1px solid #000;
+            margin-bottom: 5px;
+        }
+        .signature-name { font-weight: bold; }
+        .signature-title { font-size:10pt; }
         .important-note { margin-top: 25px; font-style: italic; font-size: 9pt; color: #444; }
         .text-center { text-align: center; }
         .text-right { text-align: right; }
@@ -197,11 +204,11 @@ $condition_texts_print = [
         </div>
 
         <div class="footer-section">
-             <p>Issued this <?php echo date("jS", strtotime($clearance['issue_date'])); ?> day of <?php echo date("F, Y", strtotime($clearance['issue_date'])); ?> at <?php echo htmlspecialchars($app_settings['municipality_name'] ?? '[Municipality Name]'); ?>, <?php echo htmlspecialchars($app_settings['province_name'] ?? '[Province Name]'); ?>.</p>
+             <p class="text-center">Issued this <?php echo date("jS", strtotime($clearance['issue_date'])); ?> day of <?php echo date("F, Y", strtotime($clearance['issue_date'])); ?> at <?php echo htmlspecialchars($app_settings['municipality_name'] ?? '[Municipality Name]'); ?>, <?php echo htmlspecialchars($app_settings['province_name'] ?? '[Province Name]'); ?>.</p>
             <div class="signature-block">
                 <div class="signature-line"></div>
-                <p class="signature-name text-center"><?php echo strtoupper(htmlspecialchars($clearance['signatory_name'] ?: '[SIGNATORY NAME]')); ?></p>
-                <p class="signature-title text-center">MPDC / Zoning Administrator</p> <!-- User should customize title -->
+                <p class="signature-name"><?php echo strtoupper(htmlspecialchars($clearance['signatory_name'] ?: '[SIGNATORY NAME]')); ?></p>
+                <p class="signature-title">MPDC / Zoning Administrator</p> <!-- User should customize title -->
             </div>
         </div>
 
