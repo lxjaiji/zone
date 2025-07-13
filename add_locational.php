@@ -199,6 +199,82 @@ $condition_texts = [
         .condition-item input[type="checkbox"] { margin-right: 10px; margin-top: 5px; }
         .condition-item label { flex: 1; }
     </style>
+    <script>
+        function toggleAllConditions(source) {
+            const checkboxes = document.querySelectorAll('.conditions-fieldset input[type="checkbox"]');
+            for (let i = 0; i < checkboxes.length; i++) {
+                if (checkboxes[i] !== source) {
+                    checkboxes[i].checked = source.checked;
+                }
+            }
+        }
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const copyBtn = document.getElementById('copy_details_btn');
+            const searchInput = document.getElementById('zoning_cert_search');
+            const statusP = document.getElementById('copy_status');
+
+            copyBtn.addEventListener('click', function() {
+                const selectedValue = searchInput.value;
+                if (!selectedValue) {
+                    statusP.textContent = 'Please select a certificate from the list.';
+                    statusP.style.color = 'red';
+                    return;
+                }
+
+                // Find the selected option in the datalist to get its data-id
+                const options = document.querySelectorAll('#zoning_certs option');
+                let selectedId = null;
+                for (const option of options) {
+                    if (option.value === selectedValue) {
+                        selectedId = option.getAttribute('data-id');
+                        break;
+                    }
+                }
+
+                if (!selectedId) {
+                    statusP.textContent = 'Invalid certificate number. Please choose from the list.';
+                    statusP.style.color = 'red';
+                    return;
+                }
+
+                statusP.textContent = 'Copying details...';
+                statusP.style.color = 'blue';
+
+                // AJAX call to fetch details
+                fetch('get_zoning_details.php?id=' + selectedId)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.error) {
+                            throw new Error(data.error);
+                        }
+                        // Populate the form fields
+                        document.querySelector('input[name="applicant_name"]').value = data.applicant_name || '';
+                        document.querySelector('input[name="owner_name"]').value = data.owner_name || '';
+                        document.querySelector('textarea[name="address"]').value = data.address || '';
+                        document.querySelector('input[name="tax_declaration"]').value = data.tax_declaration || '';
+                        document.querySelector('input[name="project_type"]').value = data.project_type || '';
+                        document.querySelector('textarea[name="project_location"]').value = data.project_location || '';
+                        document.querySelector('input[name="purpose"]').value = data.purpose || '';
+                        // Note: land_use_classification is not in zoning certs, so it's not filled.
+
+                        statusP.textContent = 'Details copied successfully!';
+                        statusP.style.color = 'green';
+                    })
+                    .catch(error => {
+                        statusP.textContent = 'Error: ' + error.message;
+                        statusP.style.color = 'red';
+                        console.error('There was a problem with the fetch operation:', error);
+                    });
+            });
+        });
+    </script>
 </head>
 <body>
     <div class="container">
@@ -215,6 +291,29 @@ $condition_texts = [
         </nav>
 
         <div class="wrapper">
+            <div class="copy-from-zoning" style="background-color: #e9ecef; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+                <h4>Copy Details from Zoning Certificate</h4>
+                <div class="form-group">
+                    <label for="zoning_cert_search">Search by Zoning Certificate Number:</label>
+                    <input list="zoning_certs" name="zoning_cert_search" id="zoning_cert_search" class="form-control" placeholder="Type to search...">
+                    <datalist id="zoning_certs">
+                        <?php
+                        // Fetch all zoning certs for the datalist
+                        $sql_certs = "SELECT id, certificate_number, applicant_name FROM zoning_certificates ORDER BY id DESC";
+                        if ($result_certs = mysqli_query($link, $sql_certs)) {
+                            while($row_cert = mysqli_fetch_assoc($result_certs)){
+                                echo '<option value="' . htmlspecialchars($row_cert['certificate_number']) . '" data-id="' . $row_cert['id'] . '">';
+                                echo htmlspecialchars($row_cert['applicant_name']);
+                                echo '</option>';
+                            }
+                        }
+                        ?>
+                    </datalist>
+                </div>
+                <button type="button" class="btn" id="copy_details_btn" style="background-color:#17a2b8; color:white;">Copy Details</button>
+                <p id="copy_status" style="margin-top:10px;"></p>
+            </div>
+
             <h2>Add New Locational Clearance</h2>
             <p>Please fill this form to add a new locational clearance.</p>
 
@@ -284,6 +383,11 @@ $condition_texts = [
 
                 <fieldset class="conditions-fieldset full-width">
                     <legend>Conditions</legend>
+                    <div class="condition-item">
+                        <input type="checkbox" id="tick_all_conditions" onclick="toggleAllConditions(this)">
+                        <label for="tick_all_conditions"><strong>Tick/Untick All</strong></label>
+                    </div>
+                    <hr>
                     <?php for ($i = 1; $i <= 8; $i++): ?>
                     <div class="condition-item">
                         <input type="checkbox" name="condition<?php echo $i; ?>" id="condition<?php echo $i; ?>" value="1" <?php echo ($conditions['condition'.$i] == 1) ? 'checked' : ''; ?>>

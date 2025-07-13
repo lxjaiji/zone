@@ -228,6 +228,16 @@ $condition_texts = [
         .condition-item label { flex: 1; }
         .info-field { background-color: #e9ecef; padding: .375rem .75rem; border-radius: .25rem; margin-bottom: 10px; }
     </style>
+    <script>
+        function toggleAllConditions(source) {
+            const checkboxes = document.querySelectorAll('.conditions-fieldset input[type="checkbox"]');
+            for (let i = 0; i < checkboxes.length; i++) {
+                if (checkboxes[i] !== source) {
+                    checkboxes[i].checked = source.checked;
+                }
+            }
+        }
+    </script>
 </head>
 <body>
     <div class="container">
@@ -321,6 +331,11 @@ $condition_texts = [
 
                 <fieldset class="conditions-fieldset full-width">
                     <legend>Conditions</legend>
+                    <div class="condition-item">
+                        <input type="checkbox" id="tick_all_conditions" onclick="toggleAllConditions(this)">
+                        <label for="tick_all_conditions"><strong>Tick/Untick All</strong></label>
+                    </div>
+                    <hr>
                     <?php for ($i = 1; $i <= 8; $i++): ?>
                     <div class="condition-item">
                         <input type="checkbox" name="condition<?php echo $i; ?>" id="condition<?php echo $i; ?>" value="1" <?php echo ($conditions_db['condition'.$i] == 1) ? 'checked' : ''; ?>>
