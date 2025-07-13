@@ -288,7 +288,7 @@ $zoning_classifications = ['Residential', 'Commercial', 'Agro-Industrial', 'Agri
                 </div>
                 <div class="form-group full-width" style="margin-top:20px;">
                     <input type="submit" class="btn btn-primary" value="Submit">
-                    <a href="manage_zoning.php" class="btn btn-secondary">Cancel</a>
+                    <a href="<?php echo (isset($_SESSION['is_admin']) && $_SESSION['is_admin'] === true) ? 'manage_zoning.php' : 'manage_zoning_user.php'; ?>" class="btn btn-secondary">Cancel</a>
                 </div>
             </form>
         </div>

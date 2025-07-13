@@ -398,7 +398,7 @@ $condition_texts = [
 
                 <div class="form-group full-width" style="margin-top:20px;">
                     <input type="submit" class="btn btn-primary" value="Submit Clearance">
-                    <a href="manage_locational.php" class="btn btn-secondary">Cancel</a>
+                    <a href="<?php echo (isset($_SESSION['is_admin']) && $_SESSION['is_admin'] === true) ? 'manage_locational.php' : 'manage_locational_user.php'; ?>" class="btn btn-secondary">Cancel</a>
                 </div>
             </form>
         </div>
