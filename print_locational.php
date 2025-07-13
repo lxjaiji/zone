@@ -91,7 +91,13 @@ $condition_texts_print = [
     <meta charset="UTF-8">
     <title>Print Locational Clearance - <?php echo htmlspecialchars($clearance['clearance_number']); ?></title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; line-height: 1.5; color: #333; font-size: 11pt; } /* Typical print font size */
+        body {
+            font-family: "Bookman Old Style", serif;
+            margin: 20px;
+            line-height: 1;
+            color: #333;
+            font-size: 12pt;
+        }
         .print-container { width: 100%; max-width: 780px; /* Approx Letter/A4 width with margins */ margin: auto; padding: 15px; }
         h1, h2, h3 { text-align: center; margin-bottom: 15px; }
         h1 { font-size: 16pt; margin-bottom: 5px; }
