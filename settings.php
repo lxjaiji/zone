@@ -84,8 +84,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         update_setting($link, 'municipality_name', $municipality_name);
 
         // Handle logo uploads
-        handle_logo_upload('province_logo', 'province_logo_path', $errors, $link);
-        handle_logo_upload('municipality_logo', 'municipality_logo_path', $errors, $link);
+       handle_logo_upload('municipality_logo', 'municipality_logo_path', $errors, $link);
 
         if(empty($errors)) {
             $success_msg = "Settings updated successfully!";
@@ -149,12 +148,6 @@ mysqli_close($link);
                 </div>
                 <hr>
                 <div class="form-group">
-                    <label>Province Logo</label>
-                    <input type="file" name="province_logo" class="form-control">
-                    <p><small>Current Logo:</small></p>
-                    <img src="<?php echo htmlspecialchars($settings['province_logo_path'] ?? ''); ?>?t=<?php echo time(); ?>" alt="Province Logo" class="logo-preview">
-                </div>
-                 <div class="form-group">
                     <label>Municipality/City Logo</label>
                     <input type="file" name="municipality_logo" class="form-control">
                     <p><small>Current Logo:</small></p>
