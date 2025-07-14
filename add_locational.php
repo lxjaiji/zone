@@ -280,14 +280,20 @@ $condition_texts = [
     <div class="container">
         <nav>
             <?php if(isset($_SESSION['is_admin']) && $_SESSION['is_admin'] === true): ?>
-                <a href="admin_dashboard.php">User Management</a>
+                <a href="main_dashboard.php">Dashboard</a>
                 <a href="manage_zoning.php">Zoning Certificates</a>
                 <a href="manage_locational.php">Locational Clearances</a>
-                <a href="settings.php">Settings</a>
+                <div class="dropdown">
+                    <a href="#" class="dropbtn">Admin Settings</a>
+                    <div class="dropdown-content">
+                        <a href="settings.php">Application Settings</a>
+                        <a href="admin_dashboard.php">User Management</a>
+                    </div>
+                </div>
             <?php else: ?>
                 <a href="user_dashboard.php">My Dashboard</a>
             <?php endif; ?>
-            <a href="logout.php" style="float:right; margin-right:20px;">Sign Out</a>
+            <a href="logout.php" style="float:right;">Sign Out</a>
         </nav>
 
         <div class="wrapper">

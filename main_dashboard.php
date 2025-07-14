@@ -75,13 +75,13 @@ $chart_values = json_encode(array_column($chart_data, 'count'));
             <a href="manage_zoning.php">Zoning Certificates</a>
             <a href="manage_locational.php">Locational Clearances</a>
             <div class="dropdown">
-                <a href="javascript:void(0)" class="dropbtn">Settings</a>
+                <a href="#" class="dropbtn">Admin Settings</a>
                 <div class="dropdown-content">
                     <a href="settings.php">Application Settings</a>
                     <a href="admin_dashboard.php">User Management</a>
                 </div>
             </div>
-            <a href="logout.php" style="float:right; margin-right:20px;">Sign Out</a>
+            <a href="logout.php" style="float:right;">Sign Out</a>
         </nav>
 
         <div class="page-header" style="margin-top: 20px;">

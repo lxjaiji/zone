@@ -242,11 +242,17 @@ $condition_texts = [
 <body>
     <div class="container">
         <nav>
-            <a href="admin_dashboard.php">User Management</a>
+            <a href="main_dashboard.php">Dashboard</a>
             <a href="manage_zoning.php">Zoning Certificates</a>
             <a href="manage_locational.php">Locational Clearances</a>
-            <a href="settings.php">Settings</a>
-            <a href="logout.php" style="float:right; margin-right:20px;">Sign Out</a>
+            <div class="dropdown">
+                <a href="#" class="dropbtn">Admin Settings</a>
+                <div class="dropdown-content">
+                    <a href="settings.php">Application Settings</a>
+                    <a href="admin_dashboard.php">User Management</a>
+                </div>
+            </div>
+            <a href="logout.php" style="float:right;">Sign Out</a>
         </nav>
 
         <div class="wrapper">
