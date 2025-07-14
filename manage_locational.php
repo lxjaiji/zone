@@ -10,6 +10,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true || !isset($_S
 
 // Include config file
 require_once "config.php";
+$link = get_db_connection();
 
 // Fetch all locational clearances
 $locational_clearances = [];
@@ -41,8 +42,7 @@ if($result = mysqli_query($link, $sql)){
     // Store error in session to display on page, or log it
     $_SESSION['error'] = "ERROR: Could not execute query to fetch locational clearances. " . mysqli_error($link);
 }
-
-// mysqli_close($link); // Keep connection open for other operations or includes
+mysqli_close($link);
 ?>
 
 <!DOCTYPE html>

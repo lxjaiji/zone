@@ -10,6 +10,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true ){
 }
 
 require_once "config.php";
+$link = get_db_connection();
 
 // Function to fetch all settings into an associative array
 function get_all_settings($link) {
@@ -30,7 +31,10 @@ $conditions_data = [];
 
 if(isset($_GET["id"]) && !empty(trim($_GET["id"]))){
     $id = trim($_GET["id"]);
-    $sql = "SELECT * FROM locational_clearances WHERE id = ?"; // Fetches all fields
+    $sql = "SELECT lc.*, u.username as encoded_by_username
+            FROM locational_clearances lc
+            LEFT JOIN users u ON lc.encoded_by_user_id = u.id
+            WHERE lc.id = ?";
 
     if($stmt = mysqli_prepare($link, $sql)){
         mysqli_stmt_bind_param($stmt, "i", $param_id);
@@ -201,6 +205,7 @@ $condition_texts_print = [
             <p>Official Receipt No.: <span class="bold"><?php echo htmlspecialchars($clearance['or_number']); ?></span></p>
             <p>Amount Paid: PHP <span class="bold"><?php echo number_format($clearance['fees_paid'], 2); ?></span></p>
             <p>Date Filed: <?php echo formatDatePrint($clearance['date_filed']); ?></p>
+            <p>Encoded By: <span class="bold"><?php echo htmlspecialchars($clearance['encoded_by_username'] ?? 'N/A'); ?></span></p>
         </div>
 
         <div class="footer-section">

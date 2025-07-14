@@ -11,6 +11,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 }
 
 require_once "config.php";
+$link = get_db_connection();
 
 // Define variables and initialize
 $applicant_name = $owner_name = $address = $date_filed = $issue_date = "";
@@ -171,7 +172,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         $land_use_classification = $form_data['land_use_classification'] ?? '';
         $fees_paid = $form_data['fees_paid'] ?? '';
         $or_number = $form_data['or_number'] ?? '';
-        $signatory_name = $form_data['signatory_name'] ?? '';
+        $signatory_name = $form_data['signatory_name'] ?? $signatory_name;
         for ($i = 1; $i <= 8; $i++) {
             $conditions['condition' . $i] = isset($form_data['condition' . $i]) ? 1 : 0;
         }

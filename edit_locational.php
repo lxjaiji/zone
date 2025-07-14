@@ -9,6 +9,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true || !isset($_S
 }
 
 require_once "config.php";
+$link = get_db_connection();
 
 // Define variables
 $applicant_name = $owner_name = $address = $date_filed = $issue_date = "";
@@ -162,9 +163,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                         $fees_paid = $row["fees_paid"];
                         $or_number = $row["or_number"];
                         $signatory_name = $row["signatory_name"];
-                        for ($i = 1; $i <= 8; $i++) {
-                            $conditions_db['condition' . $i] = $row['condition' . $i . '_monitoring'] ?? ($row['condition' . $i] ?? 0); // Adjust field names if they differ in DB
-                        }
                          // Correcting condition field names from schema
                         $conditions_db['condition1'] = $row['condition1_monitoring'];
                         $conditions_db['condition2'] = $row['condition2_non_compliance'];
@@ -189,7 +187,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                 mysqli_stmt_close($stmt);
             }
         }
-        // mysqli_close($link); // Keep open for the form display
     } else {
         $_SESSION['error'] = "Invalid request: No ID specified.";
         header("location: manage_locational.php");
@@ -347,3 +344,4 @@ $condition_texts = [
     </div>
 </body>
 </html>
+<?php mysqli_close($link); ?>

@@ -8,21 +8,22 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// We need a database connection to get the logo.
-// This check prevents re-including the file if the parent page already did.
-if (!function_exists('get_all_settings')) {
-    require_once "config.php";
-}
+require_once "config.php";
+
+// Get a dedicated database connection for the navigation
+$nav_link = get_db_connection();
 
 // Fetch the municipality logo path
 $logo_path_nav = 'uploads/default_logo.png'; // Default
 $sql_logo_nav = "SELECT setting_value FROM settings WHERE setting_key = 'municipality_logo_path' LIMIT 1";
-if ($result_logo_nav = mysqli_query($link, $sql_logo_nav)) {
+if ($result_logo_nav = mysqli_query($nav_link, $sql_logo_nav)) {
     if (mysqli_num_rows($result_logo_nav) == 1) {
         $row_logo_nav = mysqli_fetch_assoc($result_logo_nav);
         $logo_path_nav = $row_logo_nav['setting_value'];
     }
 }
+// Close the dedicated connection
+mysqli_close($nav_link);
 
 $is_admin_nav = isset($_SESSION['is_admin']) && $_SESSION['is_admin'] === true;
 ?>

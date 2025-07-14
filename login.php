@@ -4,12 +4,13 @@ session_start();
 
 // Check if the user is already logged in, if yes then redirect him to welcome page
 if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true && isset($_SESSION["is_admin"]) && $_SESSION["is_admin"] === true){
-    header("location: admin_dashboard.php");
+    header("location: main_dashboard.php");
     exit;
 }
 
 // Include config file
 require_once "config.php";
+$link = get_db_connection();
 
 // Fetch the municipality logo path
 $logo_path_login = 'logo_placeholder.png'; // Default
@@ -20,7 +21,6 @@ if($result_logo_login = mysqli_query($link, $sql_logo_login)){
         $logo_path_login = $row_logo_login['setting_value'];
     }
 }
-// Do not close the connection here as it's needed for the login logic below
 
 // Define variables and initialize with empty values
 $username = $password = "";

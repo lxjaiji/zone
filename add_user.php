@@ -8,6 +8,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true || !isset($_S
 }
 
 require_once "config.php";
+$link = get_db_connection();
 
 $username = $password = "";
 $username_err = $password_err = "";
@@ -53,8 +54,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         $is_admin = isset($_POST['is_admin']) && $_POST['is_admin'] == '1' ? 1 : 0;
 
         // Prepare an insert statement
-        // In a real application, you MUST hash the password.
-        // $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+        $hashed_password = password_hash($password, PASSWORD_DEFAULT);
         $sql = "INSERT INTO users (username, password, is_admin) VALUES (?, ?, ?)";
 
         if($stmt = mysqli_prepare($link, $sql)){
@@ -63,7 +63,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 
             // Set parameters
             $param_username = $username;
-            $param_password = $password; // Store plain password for now. Replace with $hashed_password
+            $param_password = $hashed_password;
             $param_is_admin = $is_admin;
 
             // Attempt to execute the prepared statement
@@ -72,7 +72,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                 header("location: admin_dashboard.php");
                 exit;
             } else{
-                $_SESSION['error'] = "Oops! Something went wrong. Please try again later.";
+                $_SESSION['error'] = "Database Error: " . mysqli_stmt_error($stmt);
                 header("location: admin_dashboard.php");
                 exit;
             }

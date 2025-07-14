@@ -8,6 +8,7 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 }
 
 require_once "config.php";
+$link = get_db_connection();
 
 // Determine user role for displaying controls
 $is_admin = isset($_SESSION["is_admin"]) && $_SESSION["is_admin"] === true;
@@ -74,21 +75,11 @@ mysqli_close($link);
 </head>
 <body>
     <div class="container">
-        <nav>
-            <?php if ($is_admin): ?>
-                <a href="admin_dashboard.php">Admin Dashboard</a>
-                <a href="manage_zoning.php">Zoning Certificates</a>
-                <a href="manage_locational.php">Locational Clearances</a>
-                <a href="settings.php">Settings</a>
-            <?php else: ?>
-                <a href="user_dashboard.php">My Dashboard</a>
-            <?php endif; ?>
-            <a href="logout.php" style="float:right; margin-right:20px;">Sign Out</a>
-        </nav>
+        <?php include 'navigation.php'; ?>
 
         <div class="wrapper" style="max-width: 90%; margin: 20px auto;">
             <h2>Search Results for "<?php echo htmlspecialchars($search_query); ?>"</h2>
-            <p><a href="<?php echo $is_admin ? 'admin_dashboard.php' : 'user_dashboard.php'; ?>">Back to Dashboard</a></p>
+            <p><a href="<?php echo $is_admin ? 'main_dashboard.php' : 'user_dashboard.php'; ?>">Back to Dashboard</a></p>
             <hr>
 
             <!-- Zoning Certificate Results -->

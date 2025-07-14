@@ -8,6 +8,7 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true || !isset($_
 }
 
 require_once "config.php";
+$link = get_db_connection();
 
 $username = "";
 $is_admin = 0;
@@ -103,7 +104,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             mysqli_stmt_close($stmt);
         }
     }
-    mysqli_close($link);
 }
 ?>
 <!DOCTYPE html>
@@ -157,3 +157,4 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </div>
 </body>
 </html>
+<?php mysqli_close($link); ?>

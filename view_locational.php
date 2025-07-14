@@ -2,16 +2,14 @@
 // Initialize the session
 session_start();
 
-// Basic login check (refine for user roles later)
 if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true ){
-    if (!isset($_SESSION["is_admin"]) || $_SESSION["is_admin"] !== true) {
-         $_SESSION['error'] = "You need to be logged in to view this page.";
-         header("location: login.php");
-         exit;
-    }
+     $_SESSION['error'] = "You need to be logged in to view this page.";
+     header("location: login.php");
+     exit;
 }
 
 require_once "config.php";
+$link = get_db_connection();
 
 $clearance = null;
 $id = 0;

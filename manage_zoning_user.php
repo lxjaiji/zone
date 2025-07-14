@@ -17,6 +17,7 @@ if(isset($_SESSION["is_admin"]) && $_SESSION["is_admin"] === true){
 }
 
 require_once "config.php";
+$link = get_db_connection();
 
 $zoning_certificates_user = [];
 // For now, users can view all certificates.
@@ -46,7 +47,7 @@ if($result = mysqli_query($link, $sql)){
 } else{
     $_SESSION['error_user_dash'] = "ERROR: Could not fetch zoning certificates. " . mysqli_error($link);
 }
-// mysqli_close($link); // Keep open for now
+mysqli_close($link);
 ?>
 
 <!DOCTYPE html>

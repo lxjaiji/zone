@@ -9,11 +9,13 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true || !isset($_S
 }
 
 require_once "config.php";
+$link = get_db_connection();
 
 // Define variables and initialize with empty values from DB or POST
 $applicant_name = $owner_name = $address = $date_filed = $issue_date = "";
 $certificate_number = $expiration_date = $tax_declaration = $project_type = "";
 $project_location = $purpose = $zoning_classification = $fees_paid = $or_number = "";
+$signatory_name = "";
 $id = 0;
 
 $errors = [];
@@ -21,6 +23,7 @@ $errors = [];
 // Processing form data when form is submitted
 if($_SERVER["REQUEST_METHOD"] == "POST"){
     $id = intval($_POST["id"]);
+    $signatory_name_post = trim($_POST['signatory_name']);
 
     // Validate Applicant Name
     $applicant_name = trim($_POST["applicant_name"]);
@@ -77,14 +80,14 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     if(empty($or_number)){ $errors["or_number"] = "Please enter O.R. Number."; }
 
     if(empty($errors)){
-        $sql = "UPDATE zoning_certificates SET applicant_name=?, owner_name=?, address=?, date_filed=?, issue_date=?, expiration_date=?, tax_declaration=?, project_type=?, project_location=?, purpose=?, zoning_classification=?, fees_paid=?, or_number=?, updated_at=CURRENT_TIMESTAMP WHERE id=?";
+        $sql = "UPDATE zoning_certificates SET applicant_name=?, owner_name=?, address=?, date_filed=?, issue_date=?, expiration_date=?, tax_declaration=?, project_type=?, project_location=?, purpose=?, zoning_classification=?, fees_paid=?, or_number=?, signatory_name=?, updated_at=CURRENT_TIMESTAMP WHERE id=?";
 
         if($stmt = mysqli_prepare($link, $sql)){
-            mysqli_stmt_bind_param($stmt, "sssssssssssdssi",
+            mysqli_stmt_bind_param($stmt, "ssssssssssssdssi",
                 $applicant_name, $owner_name, $address, $date_filed, $issue_date,
                 $expiration_date, $tax_declaration, $project_type,
                 $project_location, $purpose, $zoning_classification, $fees_paid,
-                $or_number, $id
+                $or_number, $signatory_name_post, $id
             );
 
             if(mysqli_stmt_execute($stmt)){
@@ -133,6 +136,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             $zoning_classification = $form_data['zoning_classification'] ?? '';
             $fees_paid = $form_data['fees_paid'] ?? '';
             $or_number = $form_data['or_number'] ?? '';
+            $signatory_name = $form_data['signatory_name'] ?? '';
             unset($_SESSION['form_data']);
         } else {
             // If not from a failed POST, fetch from DB
@@ -159,6 +163,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                         $zoning_classification = $row["zoning_classification"];
                         $fees_paid = $row["fees_paid"];
                         $or_number = $row["or_number"];
+                        $signatory_name = $row["signatory_name"];
                     } else{
                         $_SESSION['error'] = "No record found with that ID.";
                         header("location: manage_zoning.php");
@@ -172,7 +177,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                 mysqli_stmt_close($stmt);
             }
         }
-        // mysqli_close($link); // Don't close if form needs to be displayed
     } else{
         $_SESSION['error'] = "Invalid request. No ID specified.";
         header("location: manage_zoning.php");
@@ -276,6 +280,10 @@ $zoning_classifications_enum = ['Residential', 'Commercial', 'Agro-Industrial', 
                         <input type="text" name="or_number" class="form-control <?php echo (!empty($errors['or_number'])) ? 'is-invalid' : ''; ?>" value="<?php echo htmlspecialchars($or_number); ?>" required>
                     </div>
                     <div class="form-group">
+                        <label>Signatory Name</label>
+                        <input type="text" name="signatory_name" class="form-control" value="<?php echo htmlspecialchars($signatory_name); ?>">
+                    </div>
+                    <div class="form-group">
                         <label>Issue Date (Auto-updated)</label>
                         <input type="text" class="form-control info-field" value="<?php echo htmlspecialchars($issue_date); ?>" readonly>
                     </div>
@@ -293,3 +301,4 @@ $zoning_classifications_enum = ['Residential', 'Commercial', 'Agro-Industrial', 
     </div>
 </body>
 </html>
+<?php mysqli_close($link); ?>

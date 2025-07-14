@@ -11,6 +11,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true || !isset($_S
 }
 
 require_once "config.php";
+$link = get_db_connection();
 
 if(isset($_GET["id"]) && !empty(trim($_GET["id"]))){
     $certificate_id = trim($_GET["id"]);

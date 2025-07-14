@@ -8,6 +8,7 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true || !isset($_
 }
 
 require_once "config.php";
+$link = get_db_connection();
 
 $settings = [];
 $errors = [];

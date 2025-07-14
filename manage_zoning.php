@@ -10,6 +10,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true || !isset($_S
 
 // Include config file
 require_once "config.php";
+$link = get_db_connection();
 
 // Fetch all zoning certificates
 $zoning_certificates = [];
@@ -39,8 +40,7 @@ if($result = mysqli_query($link, $sql)){
 } else{
     echo "ERROR: Could not able to execute $sql. " . mysqli_error($link);
 }
-
-// mysqli_close($link); // Keep connection open for other operations or includes
+mysqli_close($link);
 ?>
 
 <!DOCTYPE html>

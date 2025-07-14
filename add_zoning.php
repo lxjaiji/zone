@@ -11,6 +11,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 }
 
 require_once "config.php";
+$link = get_db_connection();
 
 // Define variables and initialize with empty values
 $applicant_name = $owner_name = $address = $date_filed = $issue_date = "";
@@ -37,7 +38,6 @@ function generateCertificateNumber($link) {
     $prefix = "ZC-" . $current_year . "-";
 
     if($stmt = mysqli_prepare($link, $sql)){
-        mysqli_stmt_bind_param($stmt, "s", $param_prefix);
         $param_prefix_like = $prefix . "%";
         mysqli_stmt_bind_param($stmt, "s", $param_prefix_like);
 
@@ -154,7 +154,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                 }
                 exit;
             } else {
-                $_SESSION['error'] = "Oops! Something went wrong. Please try again later. Error: " . mysqli_error($link);
+                $_SESSION['error'] = "Database Error: " . mysqli_stmt_error($stmt);
             }
             mysqli_stmt_close($stmt);
         } else {
@@ -192,6 +192,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         $zoning_classification = $form_data['zoning_classification'] ?? '';
         $fees_paid = $form_data['fees_paid'] ?? '';
         $or_number = $form_data['or_number'] ?? '';
+        $signatory_name = $form_data['signatory_name'] ?? $signatory_name; // Keep pre-filled if available
         unset($_SESSION['form_data']);
     }
 }

@@ -10,6 +10,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true || !isset($_S
 
 // Include config file
 require_once "config.php";
+$link = get_db_connection();
 
 // Fetch all non-admin users
 $users = [];
@@ -24,9 +25,7 @@ if($result = mysqli_query($link, $sql)){
 } else{
     echo "ERROR: Could not able to execute $sql. " . mysqli_error($link);
 }
-
-// Close connection (will be reopened by included files if needed)
-// mysqli_close($link); // Commenting out as add_user.php and delete_user.php will need it.
+mysqli_close($link);
 ?>
 
 <!DOCTYPE html>

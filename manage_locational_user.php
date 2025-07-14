@@ -15,6 +15,7 @@ if(isset($_SESSION["is_admin"]) && $_SESSION["is_admin"] === true){
 }
 
 require_once "config.php";
+$link = get_db_connection();
 
 $locational_clearances_user = [];
 // For now, users can view all clearances.
@@ -43,7 +44,7 @@ if($result = mysqli_query($link, $sql)){
 } else{
     $_SESSION['error_user_dash_lc'] = "ERROR: Could not fetch locational clearances. " . mysqli_error($link);
 }
-// mysqli_close($link);
+mysqli_close($link);
 ?>
 
 <!DOCTYPE html>

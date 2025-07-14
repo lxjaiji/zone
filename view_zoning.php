@@ -2,22 +2,14 @@
 // Initialize the session
 session_start();
 
-// Check if the user is logged in (admin or potentially regular user later)
-// For now, only admin access is implicitly handled by links from admin pages.
-// If regular users need access, this check needs to be more robust.
 if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true ){
-    // If it's not an admin trying to access, they shouldn't be here without further role checks
-    if (!isset($_SESSION["is_admin"]) || $_SESSION["is_admin"] !== true) {
-        // For now, redirect non-admins or non-logged-in users to login.
-        // This logic will need refinement when regular user roles are fully implemented.
-         $_SESSION['error'] = "You need to be logged in to view this page.";
-         header("location: login.php");
-         exit;
-    }
+     $_SESSION['error'] = "You need to be logged in to view this page.";
+     header("location: login.php");
+     exit;
 }
 
-
 require_once "config.php";
+$link = get_db_connection();
 
 $certificate = null;
 $id = 0;

@@ -10,6 +10,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true ){
 }
 
 require_once "config.php";
+$link = get_db_connection();
 
 // Function to fetch all settings into an associative array
 function get_all_settings($link) {
@@ -30,7 +31,10 @@ $id = 0;
 if(isset($_GET["id"]) && !empty(trim($_GET["id"]))){
     $id = trim($_GET["id"]);
     // Fetch certificate details, could also join with users table if 'encoded by' is needed on printout
-    $sql = "SELECT * FROM zoning_certificates WHERE id = ?";
+    $sql = "SELECT zc.*, u.username as encoded_by_username
+            FROM zoning_certificates zc
+            LEFT JOIN users u ON zc.encoded_by_user_id = u.id
+            WHERE zc.id = ?";
 
     if($stmt = mysqli_prepare($link, $sql)){
         mysqli_stmt_bind_param($stmt, "i", $param_id);
@@ -208,6 +212,7 @@ function formatDate($dateStr) {
         <p>Paid under O.R. No.: <strong><?php echo htmlspecialchars($certificate['or_number']); ?></strong></p>
         <p>Amount Paid: PHP <strong><?php echo number_format($certificate['fees_paid'], 2); ?></strong></p>
         <p>Date Filed: <?php echo formatDate($certificate['date_filed']); ?></p>
+        <p>Encoded By: <strong><?php echo htmlspecialchars($certificate['encoded_by_username'] ?? 'N/A'); ?></strong></p>
 
 
         <div class="footer-section">
@@ -215,7 +220,7 @@ function formatDate($dateStr) {
 
             <div class="signature-block">
                  <div class="signature-line"></div>
-                 <p class="signature-name">[ZONING ADMINISTRATOR'S NAME]</p>
+                 <p class="signature-name"><?php echo htmlspecialchars($certificate['signatory_name'] ?: '[ZONING ADMINISTRATOR NAME]'); ?></p>
                  <p class="signature-title">Zoning Administrator</p>
             </div>
         </div>
