@@ -89,23 +89,11 @@ if ($certificate === null) {
 </head>
 <body>
     <div class="container">
+        <?php include 'navigation.php'; ?>
         <?php
         // Determine if admin or regular user for navigation and controls
         $is_admin_view = isset($_SESSION["is_admin"]) && $_SESSION["is_admin"] === true;
         ?>
-        <nav>
-            <?php if($is_admin_view): ?>
-                <a href="admin_dashboard.php">User Management</a>
-                <a href="manage_zoning.php">Zoning Certificates</a>
-                <a href="manage_locational.php">Locational Clearances</a>
-            <?php else: ?>
-                <!-- Navigation for regular user, if any. Can link back to their dashboard -->
-                <a href="user_dashboard.php">My Dashboard</a>
-                <a href="manage_zoning_user.php">Zoning Certificates</a>
-                <a href="manage_locational_user.php">Locational Clearances</a>
-            <?php endif; ?>
-            <a href="logout.php" style="float:right; margin-right:20px;">Sign Out</a>
-        </nav>
 
         <div class="wrapper">
             <div style="display:flex; justify-content:space-between; align-items:center;">

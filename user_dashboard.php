@@ -97,9 +97,9 @@ $username = htmlspecialchars($_SESSION["username"]);
     </style>
 </head>
 <body>
-    <div class="dashboard-container">
+    <div class="container">
+        <?php include 'navigation.php'; ?>
         <div class="dashboard-header">
-            <a href="logout.php" class="logout-btn">Sign Out</a>
             <h1>Welcome, <?php echo $username; ?>!</h1>
             <p>This is your personal dashboard to encode, view, and print certificates and clearances.</p>
         </div>

@@ -71,10 +71,10 @@ if($result = mysqli_query($link, $sql)){
     </style>
 </head>
 <body>
-    <div class="user-view-container">
-        <div class="page-header-user">
+    <div class="container">
+        <?php include 'navigation.php'; ?>
+        <div class="page-header-user" style="margin-top:20px;">
             <h2>Zoning Certificates</h2>
-            <a href="user_dashboard.php" class="btn-back-user">Back to Dashboard</a>
         </div>
 
         <?php

@@ -115,19 +115,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </head>
 <body>
     <div class="container">
-        <nav>
-            <a href="main_dashboard.php">Dashboard</a>
-            <a href="manage_zoning.php">Zoning Certificates</a>
-            <a href="manage_locational.php">Locational Clearances</a>
-            <div class="dropdown">
-                <a href="#" class="dropbtn">Admin Settings</a>
-                <div class="dropdown-content">
-                    <a href="settings.php">Application Settings</a>
-                    <a href="admin_dashboard.php">User Management</a>
-                </div>
-            </div>
-            <a href="logout.php" style="float:right;">Sign Out</a>
-        </nav>
+        <?php include 'navigation.php'; ?>
         <div class="wrapper" style="max-width: 600px; margin: 20px auto;">
             <h2>Edit User: <?php echo htmlspecialchars($username); ?></h2>
             <p>Modify user details below. Leave password fields blank to keep the current password.</p>

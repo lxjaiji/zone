@@ -59,19 +59,7 @@ if($result = mysqli_query($link, $sql)){
 </head>
 <body>
     <div class="container">
-        <nav>
-            <a href="main_dashboard.php">Dashboard</a>
-            <a href="manage_zoning.php">Zoning Certificates</a>
-            <a href="manage_locational.php">Locational Clearances</a>
-            <div class="dropdown">
-                <a href="#" class="dropbtn">Admin Settings</a>
-                <div class="dropdown-content">
-                    <a href="settings.php">Application Settings</a>
-                    <a href="admin_dashboard.php">User Management</a>
-                </div>
-            </div>
-            <a href="logout.php" style="float:right;">Sign Out</a>
-        </nav>
+        <?php include 'navigation.php'; ?>
 
         <div class="page-header" style="margin-top:20px; display:flex; justify-content:space-between; align-items:center;">
             <h2>Manage Zoning Certificates</h2>
