@@ -65,32 +65,26 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                     // Bind result variables
                     mysqli_stmt_bind_result($stmt, $id, $username, $hashed_password, $is_admin);
                     if(mysqli_stmt_fetch($stmt)){
-                        // For now, we are directly comparing passwords.
-                        // In a real application, you should hash passwords and use password_verify().
-                        if($password === $hashed_password){ // Replace 'admin_password' with the actual password or use password_verify
-                            if($is_admin){
-                                // Password is correct, so start a new session
-                                session_start();
+                        // Verify password
+                        if(password_verify($password, $hashed_password)){
+                            // Password is correct, so start a new session
+                            // session_start(); // Already started at the top
 
-                                // Store data in session variables
-                                $_SESSION["loggedin"] = true;
-                                $_SESSION["id"] = $id;
-                                $_SESSION["username"] = $username;
-                                $_SESSION["is_admin"] = (bool)$is_admin; // Ensure it's a boolean
+                            // Store data in session variables
+                            $_SESSION["loggedin"] = true;
+                            $_SESSION["id"] = $id;
+                            $_SESSION["username"] = $username;
+                            $_SESSION["is_admin"] = (bool)$is_admin;
 
-                                // Redirect user based on admin status
-                                if($_SESSION["is_admin"]){
-                                    header("location: admin_dashboard.php");
-                                } else {
-                                    // Redirect non-admin user to their dashboard (to be created)
-                                    header("location: user_dashboard.php");
-                                }
+                            // Redirect user based on admin status
+                            if($_SESSION["is_admin"]){
+                                header("location: main_dashboard.php");
                             } else {
-                                // Password is not valid (this comparison needs to be password_verify in production)
-                                $login_err = "Invalid username or password.";
+                                header("location: user_dashboard.php");
                             }
+                            exit; // Crucial to stop script execution after redirect
                         } else{
-                            // Password is not valid (this comparison needs to be password_verify in production)
+                            // Password is not valid
                             $login_err = "Invalid username or password.";
                         }
                     }

@@ -61,6 +61,11 @@ $chart_values = json_encode(array_column($chart_data, 'count'));
             border-bottom: 2px solid #007bff;
             padding-bottom: 10px;
         }
+        #chart-card {
+            position: relative;
+            height: 40vh; /* vh is viewport height, adjust as needed */
+            max-height: 350px; /* Set a max height */
+        }
     </style>
 </head>
 <body>
@@ -109,7 +114,7 @@ $chart_values = json_encode(array_column($chart_data, 'count'));
         const chartValues = <?php echo $chart_values; ?>;
 
         new Chart(ctx, {
-            type: 'bar',
+            type: 'line',
             data: {
                 labels: chartLabels,
                 datasets: [{
