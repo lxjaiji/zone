@@ -35,30 +35,6 @@ if($result = mysqli_query($link, $sql)){
     <meta charset="UTF-8">
     <title>Admin Dashboard</title>
     <link rel="stylesheet" href="style.css">
-    <style>
-        /* Basic Dropdown CSS */
-        .nav-item.dropdown {
-            position: relative;
-            display: inline-block;
-        }
-        .dropdown-content {
-            display: none;
-            position: absolute;
-            background-color: #f9f9f9;
-            min-width: 160px;
-            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-            z-index: 1;
-        }
-        .dropdown-content a {
-            color: black;
-            padding: 12px 16px;
-            text-decoration: none;
-            display: block;
-            text-align: left;
-        }
-        .dropdown-content a:hover {background-color: #f1f1f1;}
-        .dropdown:hover .dropdown-content {display: block;}
-    </style>
     <script>
         function confirmDelete(userId) {
             if (confirm("Are you sure you want to delete this user?")) {
@@ -73,7 +49,7 @@ if($result = mysqli_query($link, $sql)){
             <a href="main_dashboard.php">Dashboard</a>
             <a href="manage_zoning.php">Zoning Certificates</a>
             <a href="manage_locational.php">Locational Clearances</a>
-            <div class="nav-item dropdown">
+            <div class="dropdown">
                 <a href="javascript:void(0)" class="dropbtn">Settings</a>
                 <div class="dropdown-content">
                     <a href="settings.php">Application Settings</a>

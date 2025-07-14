@@ -116,10 +116,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <body>
     <div class="container">
         <nav>
-            <a href="admin_dashboard.php">User Management</a>
+            <a href="main_dashboard.php">Dashboard</a>
             <a href="manage_zoning.php">Zoning Certificates</a>
             <a href="manage_locational.php">Locational Clearances</a>
-            <a href="settings.php">Settings</a>
+            <div class="dropdown">
+                <a href="javascript:void(0)" class="dropbtn">Settings</a>
+                <div class="dropdown-content">
+                    <a href="settings.php">Application Settings</a>
+                    <a href="admin_dashboard.php">User Management</a>
+                </div>
+            </div>
             <a href="logout.php" style="float:right; margin-right:20px;">Sign Out</a>
         </nav>
         <div class="wrapper" style="max-width: 600px; margin: 20px auto;">

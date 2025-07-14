@@ -74,7 +74,7 @@ $chart_values = json_encode(array_column($chart_data, 'count'));
             <a href="main_dashboard.php">Dashboard</a>
             <a href="manage_zoning.php">Zoning Certificates</a>
             <a href="manage_locational.php">Locational Clearances</a>
-            <div class="nav-item dropdown">
+            <div class="dropdown">
                 <a href="javascript:void(0)" class="dropbtn">Settings</a>
                 <div class="dropdown-content">
                     <a href="settings.php">Application Settings</a>
