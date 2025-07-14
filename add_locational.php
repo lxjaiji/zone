@@ -16,8 +16,18 @@ require_once "config.php";
 $applicant_name = $owner_name = $address = $date_filed = $issue_date = "";
 $clearance_number = $expiration_date = $tax_declaration = $project_type = "";
 $project_location = $purpose = $land_use_classification = $fees_paid = $or_number = "";
-$signatory_name = "";
 $encoded_by_user_id = $_SESSION["id"];
+
+// Fetch default signatory name from settings
+$signatory_name = ''; // Default empty
+$sql_signatory = "SELECT setting_value FROM settings WHERE setting_key = 'default_signatory_name' LIMIT 1";
+if($result_signatory = mysqli_query($link, $sql_signatory)){
+    if(mysqli_num_rows($result_signatory) == 1){
+        $row_signatory = mysqli_fetch_assoc($result_signatory);
+        $signatory_name = $row_signatory['setting_value'];
+    }
+}
+
 
 // Initialize conditions (all default to false, which is 0 for TINYINT/BOOLEAN in MySQL)
 $conditions = [];

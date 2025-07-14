@@ -16,7 +16,17 @@ require_once "config.php";
 $applicant_name = $owner_name = $address = $date_filed = $issue_date = "";
 $certificate_number = $expiration_date = $tax_declaration = $project_type = "";
 $project_location = $purpose = $zoning_classification = $fees_paid = $or_number = "";
-$encoded_by_user_id = $_SESSION["id"]; // Get admin user ID from session
+$encoded_by_user_id = $_SESSION["id"];
+
+// Fetch default signatory name from settings
+$signatory_name = ''; // Default empty
+$sql_signatory = "SELECT setting_value FROM settings WHERE setting_key = 'default_signatory_name' LIMIT 1";
+if($result_signatory = mysqli_query($link, $sql_signatory)){
+    if(mysqli_num_rows($result_signatory) == 1){
+        $row_signatory = mysqli_fetch_assoc($result_signatory);
+        $signatory_name = $row_signatory['setting_value'];
+    }
+}
 
 $errors = [];
 
@@ -121,16 +131,17 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 
     // If no validation errors, proceed to generate certificate number and insert
     if(empty($errors)){
+        $signatory_name_post = trim($_POST['signatory_name']); // Get from post
         $certificate_number = generateCertificateNumber($link);
 
-        $sql = "INSERT INTO zoning_certificates (applicant_name, owner_name, address, date_filed, issue_date, certificate_number, expiration_date, tax_declaration, project_type, project_location, purpose, zoning_classification, fees_paid, or_number, encoded_by_user_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO zoning_certificates (applicant_name, owner_name, address, date_filed, issue_date, certificate_number, expiration_date, tax_declaration, project_type, project_location, purpose, zoning_classification, fees_paid, or_number, signatory_name, encoded_by_user_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         if($stmt = mysqli_prepare($link, $sql)){
-            mysqli_stmt_bind_param($stmt, "ssssssssssssdsi",
+            mysqli_stmt_bind_param($stmt, "ssssssssssssdssi",
                 $applicant_name, $owner_name, $address, $date_filed, $issue_date,
                 $certificate_number, $expiration_date, $tax_declaration, $project_type,
                 $project_location, $purpose, $zoning_classification, $fees_paid,
-                $or_number, $encoded_by_user_id
+                $or_number, $signatory_name_post, $encoded_by_user_id
             );
 
             if(mysqli_stmt_execute($stmt)){
@@ -290,6 +301,10 @@ $zoning_classifications = ['Residential', 'Commercial', 'Agro-Industrial', 'Agri
                     <div class="form-group">
                         <label>O.R. Number</label>
                         <input type="text" name="or_number" class="form-control <?php echo (!empty($errors['or_number'])) ? 'is-invalid' : ''; ?>" value="<?php echo htmlspecialchars($or_number); ?>" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Signatory Name</label>
+                        <input type="text" name="signatory_name" class="form-control" value="<?php echo htmlspecialchars($signatory_name); ?>">
                     </div>
                 </div>
                 <div class="form-group full-width" style="margin-top:20px;">

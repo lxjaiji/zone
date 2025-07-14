@@ -75,6 +75,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Update text settings
     $province_name = trim($_POST['province_name']);
     $municipality_name = trim($_POST['municipality_name']);
+    $default_signatory_name = trim($_POST['default_signatory_name']);
 
     if(empty($province_name)) $errors[] = "Province name cannot be empty.";
     if(empty($municipality_name)) $errors[] = "Municipality name cannot be empty.";
@@ -82,9 +83,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if(empty($errors)) {
         update_setting($link, 'province_name', $province_name);
         update_setting($link, 'municipality_name', $municipality_name);
+        update_setting($link, 'default_signatory_name', $default_signatory_name);
 
         // Handle logo uploads
-        handle_logo_upload('province_logo', 'province_logo_path', $errors, $link);
         handle_logo_upload('municipality_logo', 'municipality_logo_path', $errors, $link);
 
         if(empty($errors)) {
@@ -147,13 +148,12 @@ mysqli_close($link);
                     <label>Municipality/City Name</label>
                     <input type="text" name="municipality_name" class="form-control" value="<?php echo htmlspecialchars($settings['municipality_name'] ?? ''); ?>" required>
                 </div>
-                <hr>
                 <div class="form-group">
-                    <label>Province Logo</label>
-                    <input type="file" name="province_logo" class="form-control">
-                    <p><small>Current Logo:</small></p>
-                    <img src="<?php echo htmlspecialchars($settings['province_logo_path'] ?? ''); ?>?t=<?php echo time(); ?>" alt="Province Logo" class="logo-preview">
+                    <label>Default Signatory Name</label>
+                    <input type="text" name="default_signatory_name" class="form-control" value="<?php echo htmlspecialchars($settings['default_signatory_name'] ?? ''); ?>">
+                    <p><small>This name will be pre-filled on new certificates and clearances.</small></p>
                 </div>
+                <hr>
                  <div class="form-group">
                     <label>Municipality/City Logo</label>
                     <input type="file" name="municipality_logo" class="form-control">

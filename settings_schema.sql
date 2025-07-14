@@ -10,4 +10,4 @@ INSERT INTO settings (setting_key, setting_value) VALUES
 ('province_name', 'Province of [Default]'),
 ('municipality_name', 'Municipality of [Default]'),
 ('municipality_logo_path', 'uploads/default_logo.png'),
-('province_logo_path', 'uploads/default_logo.png');
+('default_signatory_name', 'JUAN DELA CRUZ');
