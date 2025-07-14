@@ -35,6 +35,30 @@ if($result = mysqli_query($link, $sql)){
     <meta charset="UTF-8">
     <title>Admin Dashboard</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* Basic Dropdown CSS */
+        .nav-item.dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            text-align: left;
+        }
+        .dropdown-content a:hover {background-color: #f1f1f1;}
+        .dropdown:hover .dropdown-content {display: block;}
+    </style>
     <script>
         function confirmDelete(userId) {
             if (confirm("Are you sure you want to delete this user?")) {
@@ -46,28 +70,23 @@ if($result = mysqli_query($link, $sql)){
 <body>
     <div class="container">
         <nav>
-            <a href="admin_dashboard.php">User Management</a>
+            <a href="main_dashboard.php">Dashboard</a>
             <a href="manage_zoning.php">Zoning Certificates</a>
             <a href="manage_locational.php">Locational Clearances</a>
-            <a href="settings.php">Settings</a>
+            <div class="nav-item dropdown">
+                <a href="javascript:void(0)" class="dropbtn">Settings</a>
+                <div class="dropdown-content">
+                    <a href="settings.php">Application Settings</a>
+                    <a href="admin_dashboard.php">User Management</a>
+                </div>
+            </div>
             <a href="logout.php" style="float:right; margin-right:20px;">Sign Out</a>
         </nav>
         <div class="page-header" style="margin-top: 20px;">
-            <h1>Hi, <b><?php echo htmlspecialchars($_SESSION["username"]); ?></b>. Welcome to the Admin Dashboard.</h1>
+            <h1>User Management</h1>
         </div>
 
-        <div class="search-bar-container wrapper" style="width:auto; margin-bottom: 20px; background-color: #f9f9f9; padding: 15px;">
-             <form action="search_results.php" method="get">
-                <div class="form-group">
-                    <input type="text" name="query" class="form-control" placeholder="Search by name, classification, zone, or location..." required>
-                </div>
-                <div class="form-group">
-                    <input type="submit" class="btn btn-primary" value="Search">
-                </div>
-            </form>
-        </div>
-
-        <h2>Manage Users</h2>
+        <h2>Manage Existing Users</h2>
 
         <h3>Add New User</h3>
         <form action="add_user.php" method="post" class="wrapper" style="width:auto; margin-bottom: 20px; background-color: #f9f9f9; padding: 15px;">
