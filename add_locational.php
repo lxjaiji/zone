@@ -19,15 +19,6 @@ $clearance_number = $expiration_date = $tax_declaration = $project_type = "";
 $project_location = $purpose = $land_use_classification = $fees_paid = $or_number = "";
 $encoded_by_user_id = $_SESSION["id"];
 
-// Fetch default signatory name from settings
-$signatory_name = ''; // Default empty
-$sql_signatory = "SELECT setting_value FROM settings WHERE setting_key = 'default_signatory_name' LIMIT 1";
-if($result_signatory = mysqli_query($link, $sql_signatory)){
-    if(mysqli_num_rows($result_signatory) == 1){
-        $row_signatory = mysqli_fetch_assoc($result_signatory);
-        $signatory_name = $row_signatory['setting_value'];
-    }
-}
 
 
 // Initialize conditions (all default to false, which is 0 for TINYINT/BOOLEAN in MySQL)
@@ -97,8 +88,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     if(empty($fees_paid) && $fees_paid !== '0') $errors["fees_paid"] = "Fees paid is required.";
     $or_number = trim($_POST["or_number"]);
     if(empty($or_number)) $errors["or_number"] = "O.R. Number is required.";
-    $signatory_name = trim($_POST["signatory_name"]);
-    if(empty($signatory_name)) $errors["signatory_name"] = "Signatory name is required.";
 
     // Process conditions checkboxes
     for ($i = 1; $i <= 8; $i++) {
@@ -111,17 +100,17 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         $sql = "INSERT INTO locational_clearances (
                     applicant_name, owner_name, address, date_filed, issue_date, clearance_number, expiration_date,
                     tax_declaration, project_type, project_location, purpose, land_use_classification,
-                    fees_paid, or_number, signatory_name, encoded_by_user_id,
+                    fees_paid, or_number, encoded_by_user_id,
                     condition1_monitoring, condition2_non_compliance, condition3_other_agencies,
                     condition4_activity_applied_for, condition5_no_major_expansion,
                     condition6_not_cert_ownership, condition7_misrepresentation, condition8_commencement_period
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         if($stmt = mysqli_prepare($link, $sql)){
-            mysqli_stmt_bind_param($stmt, "ssssssssssssdssiiiiiiiii",
+            mysqli_stmt_bind_param($stmt, "ssssssssssssdsiiiiiiii",
                 $applicant_name, $owner_name, $address, $date_filed, $issue_date, $clearance_number, $expiration_date,
                 $tax_declaration, $project_type, $project_location, $purpose, $land_use_classification,
-                $fees_paid, $or_number, $signatory_name, $encoded_by_user_id,
+                $fees_paid, $or_number, $encoded_by_user_id,
                 $conditions['condition1'], $conditions['condition2'], $conditions['condition3'],
                 $conditions['condition4'], $conditions['condition5'], $conditions['condition6'],
                 $conditions['condition7'], $conditions['condition8']
@@ -375,10 +364,6 @@ $condition_texts = [
                     <div class="form-group">
                         <label>O.R. Number</label>
                         <input type="text" name="or_number" class="form-control <?php echo (!empty($errors['or_number'])) ? 'is-invalid' : ''; ?>" value="<?php echo htmlspecialchars($or_number); ?>" required>
-                    </div>
-                     <div class="form-group">
-                        <label>Signatory Name (e.g., MPDC/Zoning Admin)</label>
-                        <input type="text" name="signatory_name" class="form-control <?php echo (!empty($errors['signatory_name'])) ? 'is-invalid' : ''; ?>" value="<?php echo htmlspecialchars($signatory_name); ?>" required>
                     </div>
                 </div>
 

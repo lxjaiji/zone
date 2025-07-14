@@ -138,7 +138,6 @@ $condition_texts_view = [
                 <div class="detail-item"><strong>Fees Paid (PHP):</strong> <span><?php echo number_format($clearance['fees_paid'], 2); ?></span></div>
                 <div class="detail-item"><strong>O.R. Number:</strong> <span><?php echo htmlspecialchars($clearance['or_number']); ?></span></div>
 
-                <div class="detail-item"><strong>Signatory Name:</strong> <span><?php echo htmlspecialchars($clearance['signatory_name'] ?: 'N/A'); ?></span></div>
                 <div class="detail-item"><strong>Encoded By:</strong> <span><?php echo htmlspecialchars($clearance['encoded_by_username'] ?: 'N/A'); ?></span></div>
                 <div class="detail-item"><strong>Date Encoded:</strong> <span><?php echo date("F j, Y, g:i a", strtotime($clearance['created_at'])); ?></span></div>
                 <div class="detail-item"><strong>Last Updated:</strong> <span><?php echo date("F j, Y, g:i a", strtotime($clearance['updated_at'])); ?></span></div>

@@ -212,7 +212,7 @@ $condition_texts_print = [
              <p class="text-center">Issued this <?php echo date("jS", strtotime($clearance['issue_date'])); ?> day of <?php echo date("F, Y", strtotime($clearance['issue_date'])); ?> at <?php echo htmlspecialchars($app_settings['municipality_name'] ?? '[Municipality Name]'); ?>, <?php echo htmlspecialchars($app_settings['province_name'] ?? '[Province Name]'); ?>.</p>
             <div class="signature-block">
                 <div class="signature-line"></div>
-                <p class="signature-name"><?php echo strtoupper(htmlspecialchars($clearance['signatory_name'] ?: '[SIGNATORY NAME]')); ?></p>
+                <p class="signature-name"><?php echo strtoupper(htmlspecialchars($app_settings['default_signatory_name'] ?? '[SIGNATORY NAME]')); ?></p>
                 <p class="signature-title">MPDC / Zoning Administrator</p> <!-- User should customize title -->
             </div>
         </div>

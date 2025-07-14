@@ -2,8 +2,9 @@
 // Check if user is already logged in and redirect accordingly
 session_start();
 
-// Include config file to get database connection
+// Include config file and get a database connection
 require_once "config.php";
+$link = get_db_connection();
 
 // Fetch the municipality logo path
 $logo_path = 'logo_placeholder.png'; // Default

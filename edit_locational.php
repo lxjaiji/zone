@@ -15,7 +15,6 @@ $link = get_db_connection();
 $applicant_name = $owner_name = $address = $date_filed = $issue_date = "";
 $clearance_number = $expiration_date = $tax_declaration = $project_type = "";
 $project_location = $purpose = $land_use_classification = $fees_paid = $or_number = "";
-$signatory_name = "";
 $id = 0;
 
 $conditions_db = []; // To store condition values from DB or POST
@@ -59,8 +58,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     if(empty($fees_paid) && $fees_paid !=='0') $errors["fees_paid"] = "Fees paid is required.";
     $or_number = trim($_POST["or_number"]);
     if(empty($or_number)) $errors["or_number"] = "O.R. Number is required.";
-    $signatory_name = trim($_POST["signatory_name"]);
-    if(empty($signatory_name)) $errors["signatory_name"] = "Signatory name is required.";
 
     // Process conditions checkboxes
     for ($i = 1; $i <= 8; $i++) {
@@ -71,17 +68,17 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         $sql = "UPDATE locational_clearances SET
                     applicant_name=?, owner_name=?, address=?, date_filed=?, issue_date=?, expiration_date=?,
                     tax_declaration=?, project_type=?, project_location=?, purpose=?, land_use_classification=?,
-                    fees_paid=?, or_number=?, signatory_name=?, updated_at=CURRENT_TIMESTAMP,
+                    fees_paid=?, or_number=?, updated_at=CURRENT_TIMESTAMP,
                     condition1_monitoring=?, condition2_non_compliance=?, condition3_other_agencies=?,
                     condition4_activity_applied_for=?, condition5_no_major_expansion=?,
                     condition6_not_cert_ownership=?, condition7_misrepresentation=?, condition8_commencement_period=?
                 WHERE id=?";
 
         if($stmt = mysqli_prepare($link, $sql)){
-            mysqli_stmt_bind_param($stmt, "ssssssssssssdsiiiiiiiiii",
+            mysqli_stmt_bind_param($stmt, "ssssssssssssdsiiiiiiiii",
                 $applicant_name, $owner_name, $address, $date_filed, $issue_date, $expiration_date,
                 $tax_declaration, $project_type, $project_location, $purpose, $land_use_classification,
-                $fees_paid, $or_number, $signatory_name,
+                $fees_paid, $or_number,
                 $conditions_db['condition1'], $conditions_db['condition2'], $conditions_db['condition3'],
                 $conditions_db['condition4'], $conditions_db['condition5'], $conditions_db['condition6'],
                 $conditions_db['condition7'], $conditions_db['condition8'],
@@ -305,10 +302,6 @@ $condition_texts = [
                     <div class="form-group">
                         <label>O.R. Number</label>
                         <input type="text" name="or_number" class="form-control <?php echo (!empty($errors['or_number'])) ? 'is-invalid' : ''; ?>" value="<?php echo htmlspecialchars($or_number); ?>" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Signatory Name (e.g., MPDC/Zoning Admin)</label>
-                        <input type="text" name="signatory_name" class="form-control <?php echo (!empty($errors['signatory_name'])) ? 'is-invalid' : ''; ?>" value="<?php echo htmlspecialchars($signatory_name); ?>" required>
                     </div>
                     <div class="form-group">
                         <label>Issue Date (Auto)</label>

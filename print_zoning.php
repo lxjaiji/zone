@@ -220,7 +220,7 @@ function formatDate($dateStr) {
 
             <div class="signature-block">
                  <div class="signature-line"></div>
-                 <p class="signature-name"><?php echo htmlspecialchars($certificate['signatory_name'] ?: '[ZONING ADMINISTRATOR NAME]'); ?></p>
+                 <p class="signature-name">[ZONING ADMINISTRATOR'S NAME]</p>
                  <p class="signature-title">Zoning Administrator</p>
             </div>
         </div>
