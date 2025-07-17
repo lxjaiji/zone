@@ -203,6 +203,14 @@ function formatDate($dateStr) {
                 <th>Tax Declaration No.:</th>
                 <td><?php echo htmlspecialchars($certificate['tax_declaration'] ?: 'N/A'); ?></td>
             </tr>
+            <tr>
+                <th>Lot No.:</th>
+                <td><?php echo htmlspecialchars($certificate['lot_no'] ?: 'N/A'); ?></td>
+            </tr>
+            <tr>
+                <th>Land Area (sqm):</th>
+                <td><?php echo htmlspecialchars($certificate['land_area'] ?: 'N/A'); ?></td>
+            </tr>
         </table>
 
         <p>This certification is issued for the purpose of <strong><?php echo htmlspecialchars($certificate['purpose'] ?: 'Securing Locational Clearance / Building Permit / Business Permit, etc.'); ?></strong> and is subject to the conditions stipulated in the Zoning Ordinance and other applicable laws, rules, and regulations.</p>

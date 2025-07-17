@@ -79,12 +79,14 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     if(empty($or_number)){ $errors["or_number"] = "Please enter O.R. Number."; }
 
     if(empty($errors)){
-        $sql = "UPDATE zoning_certificates SET applicant_name=?, owner_name=?, address=?, date_filed=?, issue_date=?, expiration_date=?, tax_declaration=?, project_type=?, project_location=?, purpose=?, zoning_classification=?, fees_paid=?, or_number=?, updated_at=CURRENT_TIMESTAMP WHERE id=?";
+        $lot_no = trim($_POST['lot_no']);
+        $land_area = trim($_POST['land_area']);
+        $sql = "UPDATE zoning_certificates SET applicant_name=?, owner_name=?, address=?, date_filed=?, issue_date=?, expiration_date=?, tax_declaration=?, lot_no=?, land_area=?, project_type=?, project_location=?, purpose=?, zoning_classification=?, fees_paid=?, or_number=?, updated_at=CURRENT_TIMESTAMP WHERE id=?";
 
         if($stmt = mysqli_prepare($link, $sql)){
-            mysqli_stmt_bind_param($stmt, "ssssssssssssdsi",
+            mysqli_stmt_bind_param($stmt, "ssssssssssssssdssi",
                 $applicant_name, $owner_name, $address, $date_filed, $issue_date,
-                $expiration_date, $tax_declaration, $project_type,
+                $expiration_date, $tax_declaration, $lot_no, $land_area, $project_type,
                 $project_location, $purpose, $zoning_classification, $fees_paid,
                 $or_number, $id
             );
@@ -162,7 +164,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                         $zoning_classification = $row["zoning_classification"];
                         $fees_paid = $row["fees_paid"];
                         $or_number = $row["or_number"];
-                        $signatory_name = $row["signatory_name"];
+                        $lot_no = $row["lot_no"];
+                        $land_area = $row["land_area"];
                     } else{
                         $_SESSION['error'] = "No record found with that ID.";
                         header("location: manage_zoning.php");
@@ -248,6 +251,14 @@ $zoning_classifications_enum = ['Residential', 'Commercial', 'Agro-Industrial', 
                      <div class="form-group">
                         <label>Tax Declaration No.</label>
                         <input type="text" name="tax_declaration" class="form-control" value="<?php echo htmlspecialchars($tax_declaration); ?>">
+                    </div>
+                     <div class="form-group">
+                        <label>Lot No.</label>
+                        <input type="text" name="lot_no" class="form-control" value="<?php echo htmlspecialchars($lot_no); ?>">
+                    </div>
+                     <div class="form-group">
+                        <label>Land Area (sqm)</label>
+                        <input type="text" name="land_area" class="form-control" value="<?php echo htmlspecialchars($land_area); ?>">
                     </div>
                     <div class="form-group">
                         <label>Type of Project</label>

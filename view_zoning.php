@@ -104,6 +104,8 @@ if ($certificate === null) {
                 <div class="detail-item"><strong>Expiration Date:</strong> <span><?php echo date("F j, Y", strtotime($certificate['expiration_date'])); ?></span></div>
 
                 <div class="detail-item"><strong>Tax Declaration No.:</strong> <span><?php echo htmlspecialchars($certificate['tax_declaration'] ?: 'N/A'); ?></span></div>
+                <div class="detail-item"><strong>Lot No.:</strong> <span><?php echo htmlspecialchars($certificate['lot_no'] ?: 'N/A'); ?></span></div>
+                <div class="detail-item"><strong>Land Area (sqm):</strong> <span><?php echo htmlspecialchars($certificate['land_area'] ?: 'N/A'); ?></span></div>
                 <div class="detail-item"><strong>Type of Project:</strong> <span><?php echo htmlspecialchars($certificate['project_type']); ?></span></div>
                 <div class="detail-item full-width"><strong>Location of Project:</strong> <span><?php echo nl2br(htmlspecialchars($certificate['project_location'])); ?></span></div>
 

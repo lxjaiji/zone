@@ -123,14 +123,16 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 
     // If no validation errors, proceed to generate certificate number and insert
     if(empty($errors)){
+        $lot_no = trim($_POST['lot_no']);
+        $land_area = trim($_POST['land_area']);
         $certificate_number = generateCertificateNumber($link);
 
-        $sql = "INSERT INTO zoning_certificates (applicant_name, owner_name, address, date_filed, issue_date, certificate_number, expiration_date, tax_declaration, project_type, project_location, purpose, zoning_classification, fees_paid, or_number, encoded_by_user_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO zoning_certificates (applicant_name, owner_name, address, date_filed, issue_date, certificate_number, expiration_date, tax_declaration, lot_no, land_area, project_type, project_location, purpose, zoning_classification, fees_paid, or_number, encoded_by_user_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         if($stmt = mysqli_prepare($link, $sql)){
-            mysqli_stmt_bind_param($stmt, "ssssssssssssdsi",
+            mysqli_stmt_bind_param($stmt, "ssssssssssssssdssi",
                 $applicant_name, $owner_name, $address, $date_filed, $issue_date,
-                $certificate_number, $expiration_date, $tax_declaration, $project_type,
+                $certificate_number, $expiration_date, $tax_declaration, $lot_no, $land_area, $project_type,
                 $project_location, $purpose, $zoning_classification, $fees_paid,
                 $or_number, $encoded_by_user_id
             );
@@ -248,6 +250,14 @@ $zoning_classifications = ['Residential', 'Commercial', 'Agro-Industrial', 'Agri
                      <div class="form-group">
                         <label>Tax Declaration No.</label>
                         <input type="text" name="tax_declaration" class="form-control" value="<?php echo htmlspecialchars($tax_declaration); ?>">
+                    </div>
+                    <div class="form-group">
+                        <label>Lot No.</label>
+                        <input type="text" name="lot_no" class="form-control" value="">
+                    </div>
+                    <div class="form-group">
+                        <label>Land Area (sqm)</label>
+                        <input type="text" name="land_area" class="form-control" value="">
                     </div>
                     <div class="form-group">
                         <label>Type of Project</label>
