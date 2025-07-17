@@ -38,6 +38,7 @@ $is_admin_nav = isset($_SESSION['is_admin']) && $_SESSION['is_admin'] === true;
         <a href="main_dashboard.php">Dashboard</a>
         <a href="manage_zoning.php">Zoning Certificates</a>
         <a href="manage_locational.php">Locational Clearances</a>
+        <a href="manage_fishing_permits.php">Fishing Permits</a>
         <div class="dropdown">
             <a href="#" class="dropbtn">Admin Settings</a>
             <div class="dropdown-content">
@@ -50,6 +51,7 @@ $is_admin_nav = isset($_SESSION['is_admin']) && $_SESSION['is_admin'] === true;
         <a href="user_dashboard.php">Dashboard</a>
         <a href="manage_zoning_user.php">Zoning Certificates</a>
         <a href="manage_locational_user.php">Locational Clearances</a>
+        <a href="manage_fishing_permits_user.php">Fishing Permits</a>
     <?php endif; ?>
 
     <a href="logout.php" style="float:right;">Sign Out</a>
