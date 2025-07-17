@@ -53,10 +53,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     // Tax Declaration (Optional)
     $tax_declaration = trim($_POST["tax_declaration"]);
 
-    // Validate Project Type
-    $project_type = trim($_POST["project_type"]);
-    if(empty($project_type)){ $errors["project_type"] = "Please enter project type."; }
-
     // Validate Project Location
     $project_location = trim($_POST["project_location"]);
     if(empty($project_location)){ $errors["project_location"] = "Please enter project location."; }
@@ -81,12 +77,12 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     if(empty($errors)){
         $lot_no = trim($_POST['lot_no']);
         $land_area = trim($_POST['land_area']);
-        $sql = "UPDATE zoning_certificates SET applicant_name=?, owner_name=?, address=?, date_filed=?, issue_date=?, expiration_date=?, tax_declaration=?, lot_no=?, land_area=?, project_type=?, project_location=?, purpose=?, zoning_classification=?, fees_paid=?, or_number=?, updated_at=CURRENT_TIMESTAMP WHERE id=?";
+        $sql = "UPDATE zoning_certificates SET applicant_name=?, owner_name=?, address=?, date_filed=?, issue_date=?, expiration_date=?, tax_declaration=?, lot_no=?, land_area=?, project_location=?, purpose=?, zoning_classification=?, fees_paid=?, or_number=?, updated_at=CURRENT_TIMESTAMP WHERE id=?";
 
         if($stmt = mysqli_prepare($link, $sql)){
-            mysqli_stmt_bind_param($stmt, "ssssssssssssssdssi",
+            mysqli_stmt_bind_param($stmt, "sssssssssssssdssi",
                 $applicant_name, $owner_name, $address, $date_filed, $issue_date,
-                $expiration_date, $tax_declaration, $lot_no, $land_area, $project_type,
+                $expiration_date, $tax_declaration, $lot_no, $land_area,
                 $project_location, $purpose, $zoning_classification, $fees_paid,
                 $or_number, $id
             );
@@ -259,10 +255,6 @@ $zoning_classifications_enum = ['Residential', 'Commercial', 'Agro-Industrial', 
                      <div class="form-group">
                         <label>Land Area (sqm)</label>
                         <input type="text" name="land_area" class="form-control" value="<?php echo htmlspecialchars($land_area); ?>">
-                    </div>
-                    <div class="form-group">
-                        <label>Type of Project</label>
-                        <input type="text" name="project_type" class="form-control <?php echo (!empty($errors['project_type'])) ? 'is-invalid' : ''; ?>" value="<?php echo htmlspecialchars($project_type); ?>" required>
                     </div>
                     <div class="form-group full-width">
                         <label>Location of Project</label>

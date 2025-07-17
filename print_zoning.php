@@ -184,10 +184,6 @@ function formatDate($dateStr) {
 
         <table>
             <tr>
-                <th>Type of Project:</th>
-                <td><?php echo htmlspecialchars($certificate['project_type']); ?></td>
-            </tr>
-            <tr>
                 <th>Location of Project:</th>
                 <td><?php echo nl2br(htmlspecialchars($certificate['project_location'])); ?></td>
             </tr>
