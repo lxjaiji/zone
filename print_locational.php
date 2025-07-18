@@ -1,18 +1,14 @@
 <?php
-// Initialize the session
 session_start();
 
-// Check if the user is logged in. Both admin and regular users can print.
-if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true ){
-     $_SESSION['error'] = "You need to be logged in to print this page.";
-     header("location: login.php");
-     exit;
+if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
+    header("location: login.php");
+    exit;
 }
 
 require_once "config.php";
 $link = get_db_connection();
 
-// Function to fetch all settings into an associative array
 function get_all_settings($link) {
     $settings_data = [];
     $sql = "SELECT setting_key, setting_value FROM settings";
@@ -25,59 +21,40 @@ function get_all_settings($link) {
 }
 
 $app_settings = get_all_settings($link);
-$clearance = null;
-$id = 0;
+$permit = null;
+$permit_id = 0;
 $conditions_data = [];
 
-if(isset($_GET["id"]) && !empty(trim($_GET["id"]))){
-    $id = trim($_GET["id"]);
+if (isset($_GET["id"]) && !empty(trim($_GET["id"]))) {
+    $permit_id = trim($_GET["id"]);
     $sql = "SELECT lc.*, u.username as encoded_by_username
             FROM locational_clearances lc
             LEFT JOIN users u ON lc.encoded_by_user_id = u.id
             WHERE lc.id = ?";
-
-    if($stmt = mysqli_prepare($link, $sql)){
-        mysqli_stmt_bind_param($stmt, "i", $param_id);
-        $param_id = $id;
-
-        if(mysqli_stmt_execute($stmt)){
+    if ($stmt = mysqli_prepare($link, $sql)) {
+        mysqli_stmt_bind_param($stmt, "i", $permit_id);
+        if (mysqli_stmt_execute($stmt)) {
             $result = mysqli_stmt_get_result($stmt);
-            if(mysqli_num_rows($result) == 1){
-                $clearance = mysqli_fetch_assoc($result);
-                // Populate conditions
-                $conditions_data['condition1'] = $clearance['condition1_monitoring'];
-                $conditions_data['condition2'] = $clearance['condition2_non_compliance'];
-                $conditions_data['condition3'] = $clearance['condition3_other_agencies'];
-                $conditions_data['condition4'] = $clearance['condition4_activity_applied_for'];
-                $conditions_data['condition5'] = $clearance['condition5_no_major_expansion'];
-                $conditions_data['condition6'] = $clearance['condition6_not_cert_ownership'];
-                $conditions_data['condition7'] = $clearance['condition7_misrepresentation'];
-                $conditions_data['condition8'] = $clearance['condition8_commencement_period'];
-            } else {
-                die("Error: No Locational Clearance found with ID $id.");
+            if (mysqli_num_rows($result) == 1) {
+                $permit = mysqli_fetch_assoc($result);
+                for ($i = 1; $i <= 10; $i++) {
+                    $key = 'condition' . $i;
+                    $db_key = $key . ( $i==1 ? '_monitoring' : ($i==2 ? '_non_compliance' : ($i==3 ? '_other_agencies' : ($i==4 ? '_activity_applied_for' : ($i==5 ? '_no_major_expansion' : ($i==6 ? '_not_cert_ownership' : ($i==7 ? '_misrepresentation' : ($i==8 ? '_commencement_period' : ($i==9 ? '_revoked' : '_provisional')))))))));
+                    $conditions_data[$key] = $permit[$db_key] ?? 0;
+                }
             }
-        } else {
-            die("Error: Database query failed for Locational Clearance.");
         }
-        mysqli_stmt_close($stmt);
-    } else {
-        die("Error: Database statement preparation failed for Locational Clearance.");
     }
-    mysqli_close($link);
-} else {
-    die("Error: Invalid request. No ID specified for printing Locational Clearance.");
 }
 
-if ($clearance === null) {
-    die("Error: Locational Clearance data could not be loaded.");
-}
+if ($permit === null) { die("Error: Permit data could not be loaded."); }
+mysqli_close($link);
 
 function formatDatePrint($dateStr) {
-    if (empty($dateStr) || $dateStr == '0000-00-00') return 'N/A';
-    return date("F j, Y", strtotime($dateStr));
+    return empty($dateStr) || $dateStr == '0000-00-00' ? 'N/A' : date("F j, Y", strtotime($dateStr));
 }
 
-$condition_texts_print = [
+$condition_texts = [
     1 => "All Conditions stipulated herein form part of this Decision and are subject to monitoring.",
     2 => "Non-compliance therewith shall cause cancellation or legal action.",
     3 => "The applicable requirements of other agencies and applicable provision of existing laws shall be complied with.",
@@ -85,142 +62,91 @@ $condition_texts_print = [
     5 => "No major expansion, alteration and/or improvement shall be introduced without prior notice from this office.",
     6 => "This Decision shall not be construed as a certification of this office as to the ownership by the applicant of land subject of this decision.",
     7 => "Any misrepresentation. false statement, or allegations material to the issuance of this decision shall be sufficient cause for its revocation.",
-    8 => "This Decision shall be considered automatically revoked if project is not commenced within one (1) year from the date of issuance of this Decision."
+    8 => "This Decision shall be considered automatically revoked if project is not commenced within one (1) year from the date of decision.",
+    9 => "PROVISIONAL CLEARANCE ONLY.",
+    10 => "The Decision shall be considered automatically revoked if project is not commenced within one (1) year from the date of issuance of this Decision."
 ];
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Print Locational Clearance - <?php echo htmlspecialchars($clearance['clearance_number']); ?></title>
+    <title>Print Locational Clearance - <?php echo htmlspecialchars($permit['clearance_number']); ?></title>
     <style>
-        body {
-            font-family: "Bookman Old Style", serif;
-            margin: 20px;
-            line-height: 1;
-            color: #333;
-            font-size: 12pt;
-        }
-        .print-container { width: 100%; max-width: 780px; /* Approx Letter/A4 width with margins */ margin: auto; padding: 15px; }
-        h1, h2, h3 { text-align: center; margin-bottom: 15px; }
-        h1 { font-size: 16pt; margin-bottom: 5px; }
-        h2 { font-size: 14pt; margin-bottom: 10px; }
-        h3 { font-size: 12pt; text-transform: uppercase; margin-top:0; }
-        .header-section p { margin: 1px 0; font-size: 10pt; text-align: center; }
-        .header-section { text-align: center; margin-bottom: 25px; }
-        .content-section p, .content-section div { margin-bottom: 10px; }
-        .details-table { width: 100%; border-collapse: collapse; margin: 15px 0; }
-        .details-table td, .details-table th { padding: 6px; border: 1px solid #777; text-align: left; vertical-align: top; }
-        .details-table th { font-weight: bold; width: 30%; background-color: #f0f0f0; }
-        .conditions-list { list-style-type: none; padding-left: 0; margin-top: 10px; }
-        .conditions-list li { margin-bottom: 5px; display: flex; }
-        .conditions-list .condition-marker { margin-right: 8px; font-weight: bold; } /* For ✓ or ✗ */
-        .footer-section { margin-top: 30px; padding-top: 15px; /*border-top: 1px solid #555;*/ }
-        .signature-block {
-             width: 300px; /* Define a width for the block */
-             margin: 60px auto 0 auto; /* Center the block itself */
-             text-align: center;
-        }
-        .signature-line {
-            border-top: 1px solid #000;
-            margin-bottom: 5px;
-        }
+        body { font-family: "Bookman Old Style", serif; font-size: 12pt; line-height: 1; color: #333; margin: 0.5in; }
+        .print-container { width: 100%; margin: auto; }
+        .header { text-align: center; }
+        .header img { max-height: 80px; }
+        h1, h2 { text-align: center; margin: 5px 0; }
+        h1 { font-size: 16pt; }
+        h2 { font-size: 14pt; margin-bottom: 20px; text-transform: uppercase; }
+        .two-column-layout { display: flex; width: 100%; margin: 15px 0; border-collapse: collapse; border: 1px solid black; }
+        .column { width: 50%; padding: 10px; }
+        .column-left { border-right: 1px solid black; }
+        .field-label { font-weight: bold; }
+        .field-value { border-bottom: 1px solid #555; padding: 2px 5px; min-height: 1.2em; }
+        .field-group { margin-bottom: 12px; }
+        .decision-text { text-align: justify; margin-top: 15px; }
+        .conditions-list { list-style-type: none; padding-left: 0; margin-top: 15px; font-size: 10pt; line-height: 1.2; }
+        .conditions-list li { margin-bottom: 5px; }
+        .footer-section { margin-top: 30px; }
+        .signature-block { width: 300px; margin: 60px 0 0 auto; text-align: center; }
+        .signature-line { border-top: 1px solid #000; margin-bottom: 5px; }
         .signature-name { font-weight: bold; }
-        .signature-title { font-size:10pt; }
-        .important-note { margin-top: 25px; font-style: italic; font-size: 9pt; color: #444; }
-        .text-center { text-align: center; }
-        .text-right { text-align: right; }
-        .bold { font-weight: bold; }
-
-        @media print {
-            body { margin: 0.5in; /* Standard print margin */ font-size: 10pt; }
-            .print-container { border: none; box-shadow: none; width: 100%; max-width: 100%; padding: 0; }
-            .no-print { display: none; }
-            .details-table th { background-color: #f0f0f0 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; } /* Ensure background prints */
-        }
+        @media print { .no-print { display: none; } }
     </style>
 </head>
 <body onload="window.print();">
     <div class="print-container">
-        <div class="header-section" style="display: flex; justify-content: space-between; align-items: center; text-align:center; flex-wrap:wrap;">
-            <div style="flex-basis: 20%; text-align: left;">
-                <img src="<?php echo htmlspecialchars($app_settings['province_logo_path'] ?? ''); ?>" alt="Province Logo" class="logo" style="max-height:80px;">
+        <div class="header">
+            <img src="<?php echo htmlspecialchars($app_settings['municipality_logo_path'] ?? ''); ?>" alt="Municipality Logo">
+            <p>Republic of the Philippines</p>
+            <p>Province of <?php echo htmlspecialchars($app_settings['province_name'] ?? '[Province]'); ?></p>
+            <p>Municipality of <?php echo htmlspecialchars($app_settings['municipality_name'] ?? '[Municipality]'); ?></p>
+            <h1>LOCATIONAL CLEARANCE</h1>
+        </div>
+
+        <div class="two-column-layout">
+            <div class="column column-left">
+                <div class="field-group"><div class="field-label">APPLICANT:</div><div class="field-value"><?php echo htmlspecialchars($permit['applicant_name']); ?></div></div>
+                <div class="field-group"><div class="field-label">ADDRESS:</div><div class="field-value"><?php /* Address of applicant is not a field, using developer for now */ echo htmlspecialchars($permit['developer_address']); ?></div></div>
+                <div class="field-group"><div class="field-label">NAME OF PROJECT:</div><div class="field-value"><?php echo htmlspecialchars($permit['project_name']); ?></div></div>
+                <div class="field-group"><div class="field-label">RIGHT OVER LAND:</div><div class="field-value"><?php echo htmlspecialchars($permit['right_over_land']); ?></div></div>
             </div>
-            <div style="flex-basis: 60%;">
-                <p>Republic of the Philippines</p>
-                <p>Province of <?php echo htmlspecialchars($app_settings['province_name'] ?? '[Province Name]'); ?></p>
-                <p>Municipality of <?php echo htmlspecialchars($app_settings['municipality_name'] ?? '[Municipality Name]'); ?></p>
-                <p style="font-size:11pt; font-weight:bold; margin-top:5px;">OFFICE OF THE MUNICIPAL PLANNING AND DEVELOPMENT COORDINATOR / ZONING ADMINISTRATOR</p>
-            </div>
-            <div style="flex-basis: 20%; text-align: right;">
-                 <img src="<?php echo htmlspecialchars($app_settings['municipality_logo_path'] ?? ''); ?>" alt="Municipality Logo" class="logo" style="max-height:80px;">
+            <div class="column">
+                <div class="field-group"><div class="field-label">NAME OF DEVELOPER:</div><div class="field-value"><?php echo htmlspecialchars($permit['developer_name']); ?></div></div>
+                <div class="field-group"><div class="field-label">ADDRESS:</div><div class="field-value"><?php echo htmlspecialchars($permit['developer_address']); ?></div></div>
+                <div class="field-group"><div class="field-label">LOCATION:</div><div class="field-value"><?php echo htmlspecialchars($permit['location']); ?></div></div>
+                <div style="display: flex; gap: 10px;">
+                    <div class="field-group" style="flex: 1;"><div class="field-label">LAND AREA:</div><div class="field-value"><?php echo htmlspecialchars($permit['land_area']); ?></div></div>
+                    <div class="field-group" style="flex: 1;"><div class="field-label">BUILDING AREA:</div><div class="field-value"><?php echo htmlspecialchars($permit['building_area']); ?></div></div>
+                </div>
             </div>
         </div>
-        <hr style="border-top: 2px solid #000; margin-bottom: 20px;">
-        <h2 style="text-align:center;">LOCATIONAL CLEARANCE</h2>
 
-        <div class="content-section">
-            <p class="text-right">LC No.: <span class="bold"><?php echo htmlspecialchars($clearance['clearance_number']); ?></span></p>
-            <p class="text-right">Date Issued: <?php echo formatDatePrint($clearance['issue_date']); ?></p>
+        <div class="decision-text">
+            <strong>DECISION:</strong> <?php echo nl2br(htmlspecialchars($permit['decision'])); ?>
+        </div>
 
-            <p>TO WHOM IT MAY CONCERN:</p>
-            <p style="text-indent: 2em;">This Locational Clearance is hereby granted to <span class="bold"><?php echo htmlspecialchars($clearance['applicant_name']); ?></span> (Applicant) / <span class="bold"><?php echo htmlspecialchars($clearance['owner_name']); ?></span> (Owner) for the project described as follows, located at <?php echo htmlspecialchars($clearance['address']); ?>.</p>
-
-            <table class="details-table">
-                <tr>
-                    <th>Project Type:</th>
-                    <td><?php echo htmlspecialchars($clearance['project_type']); ?></td>
-                </tr>
-                <tr>
-                    <th>Project Location:</th>
-                    <td><?php echo nl2br(htmlspecialchars($clearance['project_location'])); ?></td>
-                </tr>
-                <tr>
-                    <th>Purpose of Application:</th>
-                    <td><?php echo nl2br(htmlspecialchars($clearance['purpose'] ?: 'N/A')); ?></td>
-                </tr>
-                 <tr>
-                    <th>Land Use Classification (Per Zoning Ordinance):</th>
-                    <td><?php echo htmlspecialchars($clearance['land_use_classification'] ?: 'N/A'); ?></td>
-                </tr>
-                <tr>
-                    <th>Tax Declaration No.:</th>
-                    <td><?php echo htmlspecialchars($clearance['tax_declaration'] ?: 'N/A'); ?></td>
-                </tr>
-            </table>
-
-            <p>This Clearance is issued based on the documents submitted and subject to the following conditions:</p>
-            <ul class="conditions-list">
-                <?php for($i = 1; $i <= 8; $i++): ?>
-                <li>
-                    <span class="condition-marker"><?php echo ($conditions_data['condition'.$i] == 1) ? '&#10003;' : '&nbsp; '; // Check or space ?></span> <!-- Using checkmark or space for visual cue -->
-                    <?php echo $i . ". " . htmlspecialchars($condition_texts_print[$i]); ?>
-                </li>
+        <div class="conditions-list">
+            <p>The foregoing clearance is granted subject to the following conditions:</p>
+            <ol style="padding-left: 20px;">
+                <?php for($i = 1; $i <= 10; $i++): ?>
+                    <?php if(!empty($condition_texts[$i])): ?>
+                    <li><?php echo htmlspecialchars($condition_texts[$i]); ?></li>
+                    <?php endif; ?>
                 <?php endfor; ?>
-            </ul>
-
-            <p>This Locational Clearance is valid until <span class="bold"><?php echo formatDatePrint($clearance['expiration_date']); ?></span>, unless sooner revoked for just cause or non-compliance with the conditions set forth.</p>
-
-            <p>Official Receipt No.: <span class="bold"><?php echo htmlspecialchars($clearance['or_number']); ?></span></p>
-            <p>Amount Paid: PHP <span class="bold"><?php echo number_format($clearance['fees_paid'], 2); ?></span></p>
-            <p>Date Filed: <?php echo formatDatePrint($clearance['date_filed']); ?></p>
-            <p>Encoded By: <span class="bold"><?php echo htmlspecialchars($clearance['encoded_by_username'] ?? 'N/A'); ?></span></p>
+            </ol>
         </div>
 
         <div class="footer-section">
-             <p class="text-center">Issued this <?php echo date("jS", strtotime($clearance['issue_date'])); ?> day of <?php echo date("F, Y", strtotime($clearance['issue_date'])); ?> at <?php echo htmlspecialchars($app_settings['municipality_name'] ?? '[Municipality Name]'); ?>, <?php echo htmlspecialchars($app_settings['province_name'] ?? '[Province Name]'); ?>.</p>
             <div class="signature-block">
                 <div class="signature-line"></div>
                 <p class="signature-name"><?php echo strtoupper(htmlspecialchars($app_settings['default_signatory_name'] ?? '[SIGNATORY NAME]')); ?></p>
-                <p class="signature-title">MPDC / Zoning Administrator</p> <!-- User should customize title -->
             </div>
         </div>
 
-        <div class="important-note">
-            <p><strong>Note:</strong> This Locational Clearance is not a building permit. It is one of the requirements for the issuance of a Building Permit and Business Permit. Not valid without the official seal of the issuing office.</p>
-        </div>
-        <div class="no-print" style="margin-top:20px; text-align:center;">
+         <div class="no-print" style="margin-top:20px; text-align:center;">
             <button onclick="window.print();">Print Again</button>
             <button onclick="window.close();">Close</button>
         </div>

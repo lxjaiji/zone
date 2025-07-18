@@ -120,27 +120,22 @@ $condition_texts_view = [
             <hr>
 
             <div class="detail-grid">
-                <div class="detail-item"><strong>Applicant's Name:</strong> <span><?php echo htmlspecialchars($clearance['applicant_name']); ?></span></div>
-                <div class="detail-item"><strong>Owner's Name:</strong> <span><?php echo htmlspecialchars($clearance['owner_name']); ?></span></div>
-                <div class="detail-item full-width-grid"><strong>Address:</strong> <span><?php echo nl2br(htmlspecialchars($clearance['address'])); ?></span></div>
-
-                <div class="detail-item"><strong>Date Filed:</strong> <span><?php echo date("F j, Y", strtotime($clearance['date_filed'])); ?></span></div>
-                <div class="detail-item"><strong>Issue Date:</strong> <span><?php echo date("F j, Y", strtotime($clearance['issue_date'])); ?></span></div>
-                <div class="detail-item"><strong>Expiration Date:</strong> <span><?php echo date("F j, Y", strtotime($clearance['expiration_date'])); ?></span></div>
-
-                <div class="detail-item"><strong>Tax Declaration No.:</strong> <span><?php echo htmlspecialchars($clearance['tax_declaration'] ?: 'N/A'); ?></span></div>
-                <div class="detail-item"><strong>Type of Project:</strong> <span><?php echo htmlspecialchars($clearance['project_type']); ?></span></div>
-                <div class="detail-item full-width-grid"><strong>Location of Project:</strong> <span><?php echo nl2br(htmlspecialchars($clearance['project_location'])); ?></span></div>
-
-                <div class="detail-item"><strong>Purpose:</strong> <span><?php echo nl2br(htmlspecialchars($clearance['purpose'] ?: 'N/A')); ?></span></div>
-                <div class="detail-item"><strong>Land Use Classification:</strong> <span><?php echo htmlspecialchars($clearance['land_use_classification'] ?: 'N/A'); ?></span></div>
-
-                <div class="detail-item"><strong>Fees Paid (PHP):</strong> <span><?php echo number_format($clearance['fees_paid'], 2); ?></span></div>
-                <div class="detail-item"><strong>O.R. Number:</strong> <span><?php echo htmlspecialchars($clearance['or_number']); ?></span></div>
-
-                <div class="detail-item"><strong>Encoded By:</strong> <span><?php echo htmlspecialchars($clearance['encoded_by_username'] ?: 'N/A'); ?></span></div>
-                <div class="detail-item"><strong>Date Encoded:</strong> <span><?php echo date("F j, Y, g:i a", strtotime($clearance['created_at'])); ?></span></div>
-                <div class="detail-item"><strong>Last Updated:</strong> <span><?php echo date("F j, Y, g:i a", strtotime($clearance['updated_at'])); ?></span></div>
+                <div class="detail-item"><strong>Applicant:</strong> <span><?php echo htmlspecialchars($clearance['applicant_name']); ?></span></div>
+                <div class="detail-item"><strong>Name of Developer:</strong> <span><?php echo htmlspecialchars($clearance['developer_name']); ?></span></div>
+                <div class="detail-item"><strong>Developer Address:</strong> <span><?php echo htmlspecialchars($clearance['developer_address']); ?></span></div>
+                <div class="detail-item"><strong>Name of Project:</strong> <span><?php echo htmlspecialchars($clearance['project_name']); ?></span></div>
+                <div class="detail-item"><strong>Location:</strong> <span><?php echo htmlspecialchars($clearance['location']); ?></span></div>
+                <div class="detail-item"><strong>Right Over Land:</strong> <span><?php echo htmlspecialchars($clearance['right_over_land']); ?></span></div>
+                <div class="detail-item"><strong>Land Area:</strong> <span><?php echo htmlspecialchars($clearance['land_area']); ?></span></div>
+                <div class="detail-item"><strong>Building Area:</strong> <span><?php echo htmlspecialchars($clearance['building_area']); ?></span></div>
+                <div class="detail-item full-width-grid"><strong>Decision:</strong> <span><?php echo nl2br(htmlspecialchars($clearance['decision'])); ?></span></div>
+                <hr class="full-width-grid" style="border:none; border-top:1px solid #ddd; margin: 0;">
+                <div class="detail-item"><strong>Date of Issuance:</strong> <span><?php echo date("F j, Y", strtotime($clearance['issue_date'])); ?></span></div>
+                <div class="detail-item"><strong>O.R. No.:</strong> <span><?php echo htmlspecialchars($clearance['or_number']); ?></span></div>
+                <div class="detail-item"><strong>Amount Paid:</strong> <span><?php echo number_format($clearance['amount_paid'], 2); ?></span></div>
+                <div class="detail-item"><strong>Date Paid:</strong> <span><?php echo date("F j, Y", strtotime($clearance['date_paid'])); ?></span></div>
+                <div class="detail-item"><strong>Issued At:</strong> <span><?php echo htmlspecialchars($clearance['issued_at']); ?></span></div>
+                <div class="detail-item"><strong>Encoded By:</strong> <span><?php echo htmlspecialchars($clearance['encoded_by_username']); ?></span></div>
             </div>
 
             <div class="detail-item full-width-grid" style="margin-top:20px;">
