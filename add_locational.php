@@ -32,8 +32,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $project_name = trim($_POST['project_name']);
     if(empty($project_name)) $errors[] = "Project Name is required.";
 
-    $location = trim($_POST['location']);
-    if(empty($location)) $errors[] = "Location is required.";
+    $project_location = trim($_POST['project_location']);
+    if(empty($project_location)) $errors[] = "Project Location is required.";
 
     $date_filed = trim($_POST['date_filed']);
     if(empty($date_filed)) {
@@ -225,7 +225,12 @@ $condition_texts = [
 
                 <div class="form-group full-width" style="margin-top:20px;">
                     <label>DECISION:</label>
-                    <textarea name="decision" class="form-control" rows="3"></textarea>
+                    <select name="decision" class="form-control">
+                        <option value="Granted">Granted</option>
+                        <option value="Denied">Denied</option>
+                        <option value="Appeal">Appeal</option>
+                        <option value="Other Consideration">Other Consideration</option>
+                    </select>
                 </div>
 
                 <fieldset class="conditions-fieldset full-width" style="margin-top:20px;">

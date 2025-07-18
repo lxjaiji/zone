@@ -202,7 +202,15 @@ mysqli_close($link);
                     </div>
                 </div>
 
-                <div class="form-group full-width" style="margin-top:20px;"><label>DECISION:</label><textarea name="decision" class="form-control" rows="3"><?php echo htmlspecialchars($decision); ?></textarea></div>
+                <div class="form-group full-width" style="margin-top:20px;">
+                    <label>DECISION:</label>
+                    <select name="decision" class="form-control">
+                        <option value="Granted" <?php if($decision == 'Granted') echo 'selected'; ?>>Granted</option>
+                        <option value="Denied" <?php if($decision == 'Denied') echo 'selected'; ?>>Denied</option>
+                        <option value="Appeal" <?php if($decision == 'Appeal') echo 'selected'; ?>>Appeal</option>
+                        <option value="Other Consideration" <?php if($decision == 'Other Consideration') echo 'selected'; ?>>Other Consideration</option>
+                    </select>
+                </div>
 
                 <fieldset class="conditions-fieldset full-width" style="margin-top:20px;">
                     <legend>Conditions</legend>
