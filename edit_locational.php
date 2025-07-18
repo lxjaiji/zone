@@ -10,7 +10,7 @@ require_once "config.php";
 $link = get_db_connection();
 
 // Initialize variables
-$applicant_name = $developer_name = $developer_address = $project_name = "";
+$applicant_name = $applicant_address = $developer_name = $developer_address = $project_name = "";
 $right_over_land = $land_area = $building_area = $decision = "";
 $location = $issue_date = $or_number = $amount_paid = $date_paid = $issued_at = "";
 $permit_id = 0;
@@ -34,20 +34,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $applicant_name = trim($_POST['applicant_name']);
     if (empty($applicant_name)) $errors[] = "Applicant name is required.";
 
+    $applicant_address = trim($_POST['applicant_address']);
     $developer_name = trim($_POST['developer_name']);
     $developer_address = trim($_POST['developer_address']);
     $project_name = trim($_POST['project_name']);
     if(empty($project_name)) $errors[] = "Project Name is required.";
 
-    $location = trim($_POST['location']);
-    if(empty($location)) $errors[] = "Location is required.";
+    $project_location = trim($_POST['project_location']);
+    if(empty($project_location)) $errors[] = "Project Location is required.";
 
-    $date_filed = trim($_POST['issue_date']); // The field is named issue_date on this form
-    if(empty($date_filed)) {
-        $errors[] = "Date of Issuance is required.";
-    } else {
-        $issue_date = $date_filed; // Set issue_date from the input
-    }
+    $issue_date = trim($_POST['issue_date']);
+    if(empty($issue_date)) $errors[] = "Issue date is required.";
 
     $right_over_land = trim($_POST['right_over_land']);
     $land_area = trim($_POST['land_area']);
@@ -68,7 +65,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $expiration_date = $expiration_date_obj->format('Y-m-d');
 
         $sql = "UPDATE locational_clearances SET
-                    applicant_name=?, developer_name=?, developer_address=?, location=?, issue_date=?, expiration_date=?,
+                    applicant_name=?, applicant_address=?, developer_name=?, developer_address=?, project_location=?, issue_date=?, expiration_date=?,
                     project_name=?, right_over_land=?, land_area=?, building_area=?, decision=?,
                     or_number=?, amount_paid=?, date_paid=?, issued_at=?,
                     condition1_monitoring=?, condition2_non_compliance=?, condition3_other_agencies=?,
@@ -78,8 +75,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 WHERE id=?";
 
         if ($stmt = mysqli_prepare($link, $sql)) {
-            mysqli_stmt_bind_param($stmt, "ssssssssssssdssiiiiiiiiiii",
-                $applicant_name, $developer_name, $developer_address, $location, $issue_date, $expiration_date,
+            mysqli_stmt_bind_param($stmt, "sssssssssssssdssiiiiiiiiiii",
+                $applicant_name, $applicant_address, $developer_name, $developer_address, $project_location, $issue_date, $expiration_date,
                 $project_name, $right_over_land, $land_area, $building_area, $decision,
                 $or_number, $amount_paid, $date_paid, $issued_at,
                 $conditions_db['condition1'], $conditions_db['condition2'], $conditions_db['condition3'], $conditions_db['condition4'],
@@ -107,6 +104,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if (mysqli_num_rows($result) == 1) {
                 $permit = mysqli_fetch_assoc($result);
                 $applicant_name = $permit['applicant_name'];
+                $applicant_address = $permit['applicant_address'];
                 $developer_name = $permit['developer_name'];
                 $developer_address = $permit['developer_address'];
                 $project_name = $permit['project_name'];
@@ -114,7 +112,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $land_area = $permit['land_area'];
                 $building_area = $permit['building_area'];
                 $decision = $permit['decision'];
-                $location = $permit['location'];
+                $project_location = $permit['project_location'];
                 $issue_date = $permit['issue_date'];
                 $or_number = $permit['or_number'];
                 $amount_paid = $permit['amount_paid'];
@@ -129,6 +127,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 }
+
 $condition_texts = [
     1 => "All Conditions stipulated herein form part of this Decision and are subject to monitoring.",
     2 => "Non-compliance therewith shall cause cancellation or legal action.",
@@ -138,9 +137,10 @@ $condition_texts = [
     6 => "This Decision shall not be construed as a certification of this office as to the ownership by the applicant of land subject of this decision.",
     7 => "Any misrepresentation. false statement, or allegations material to the issuance of this decision shall be sufficient cause for its revocation.",
     8 => "This Decision shall be considered automatically revoked if project is not commenced within one (1) year from the date of decision.",
-    9 => "PROVISIONAL CLEARANCE ONLY.",
-    10 => "The Decision shall be considered automatically revoked if project is not commenced within one (1) year from the date of issuance of this Decision."
+    9 => "The Decision shall be considered automatically revoked if project is not commenced within one (1) year from the date of issuance of this Decision.",
+    10 => "PROVISIONAL CLEARANCE ONLY."
 ];
+
 mysqli_close($link);
 ?>
 <!DOCTYPE html>
@@ -150,11 +150,20 @@ mysqli_close($link);
     <title>Edit Locational Clearance</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        .wrapper { max-width: 900px; }
+        .wrapper { max-width: 900px; margin: 20px auto; }
         .form-container { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         .form-column { display: flex; flex-direction: column; gap: 15px; }
+        .form-column:first-child { padding-right: 20px; border-right: 1px solid #ddd; }
         .full-width { grid-column: 1 / -1; }
     </style>
+     <script>
+        function toggleAllConditions(source) {
+            const checkboxes = document.querySelectorAll('.condition-checkbox');
+            for (let i = 0; i < checkboxes.length; i++) {
+                checkboxes[i].checked = source.checked;
+            }
+        }
+    </script>
 </head>
 <body>
     <div class="container">
@@ -171,15 +180,13 @@ mysqli_close($link);
 
             <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
                 <input type="hidden" name="id" value="<?php echo $permit_id; ?>">
-                <div class="form-group">
-                    <label>Date of Issuance:</label>
-                    <input type="date" name="issue_date" class="form-control" value="<?php echo htmlspecialchars($issue_date); ?>" required>
-                </div>
+                <div class="form-group"><label>Date of Issuance:</label><input type="date" name="issue_date" class="form-control" value="<?php echo htmlspecialchars($issue_date); ?>" required></div>
                 <hr>
                 <div class="form-container">
                     <!-- Column 1 -->
                     <div class="form-column">
                         <div class="form-group"><label>APPLICANT:</label><input type="text" name="applicant_name" class="form-control" value="<?php echo htmlspecialchars($applicant_name); ?>" required></div>
+                        <div class="form-group"><label>ADDRESS:</label><input type="text" name="applicant_address" class="form-control" value="<?php echo htmlspecialchars($applicant_address); ?>"></div>
                         <div class="form-group"><label>NAME OF PROJECT:</label><input type="text" name="project_name" class="form-control" value="<?php echo htmlspecialchars($project_name); ?>" required></div>
                         <div class="form-group"><label>RIGHT OVER LAND:</label><input type="text" name="right_over_land" class="form-control" value="<?php echo htmlspecialchars($right_over_land); ?>"></div>
                     </div>
@@ -187,7 +194,7 @@ mysqli_close($link);
                     <div class="form-column">
                         <div class="form-group"><label>NAME OF DEVELOPER:</label><input type="text" name="developer_name" class="form-control" value="<?php echo htmlspecialchars($developer_name); ?>"></div>
                         <div class="form-group"><label>ADDRESS:</label><input type="text" name="developer_address" class="form-control" value="<?php echo htmlspecialchars($developer_address); ?>"></div>
-                        <div class="form-group"><label>LOCATION:</label><input type="text" name="location" class="form-control" value="<?php echo htmlspecialchars($location); ?>" required></div>
+                        <div class="form-group"><label>PROJECT LOCATION:</label><input type="text" name="project_location" class="form-control" value="<?php echo htmlspecialchars($project_location); ?>" required></div>
                         <div style="display:flex; gap:10px;">
                             <div class="form-group" style="flex:1;"><label>LAND AREA:</label><input type="text" name="land_area" class="form-control" value="<?php echo htmlspecialchars($land_area); ?>"></div>
                             <div class="form-group" style="flex:1;"><label>BUILDING AREA:</label><input type="text" name="building_area" class="form-control" value="<?php echo htmlspecialchars($building_area); ?>"></div>
@@ -199,9 +206,11 @@ mysqli_close($link);
 
                 <fieldset class="conditions-fieldset full-width" style="margin-top:20px;">
                     <legend>Conditions</legend>
-                    <?php for ($i = 1; $i <= 10; $i++): ?>
-                        <div class="condition-item"><input type="checkbox" name="condition<?php echo $i; ?>" value="1" <?php echo ($conditions_db['condition'.$i] ?? 0) ? 'checked' : ''; ?>> <label><?php echo htmlspecialchars($condition_texts[$i] ?? 'Condition ' . $i); ?></label></div>
-                    <?php endfor; ?>
+                    <div class="condition-item"><input type="checkbox" id="tick_all_conditions" onclick="toggleAllConditions(this)"><label for="tick_all_conditions"><strong>Tick/Untick All</strong></label></div>
+                    <hr>
+                    <?php foreach ($condition_texts as $index => $text): ?>
+                        <div class="condition-item"><input type="checkbox" class="condition-checkbox" name="condition<?php echo $index; ?>" value="1" <?php echo ($conditions_db['condition'.$index] ?? 0) ? 'checked' : ''; ?>> <label><?php echo htmlspecialchars($text); ?></label></div>
+                    <?php endforeach; ?>
                 </fieldset>
 
                  <div class="form-container" style="margin-top:20px;">

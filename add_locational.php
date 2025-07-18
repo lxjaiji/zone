@@ -85,19 +85,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $expiration_date_obj->add(new DateInterval('P1Y'));
         $expiration_date = $expiration_date_obj->format('Y-m-d');
 
+        $applicant_address = trim($_POST['applicant_address']);
         $sql = "INSERT INTO locational_clearances (
-                    applicant_name, developer_name, developer_address, location, issue_date, expiration_date, clearance_number,
+                    applicant_name, applicant_address, developer_name, developer_address, project_location, issue_date, expiration_date, clearance_number,
                     project_name, right_over_land, land_area, building_area, decision,
                     or_number, amount_paid, date_paid, issued_at, encoded_by_user_id,
                     condition1_monitoring, condition2_non_compliance, condition3_other_agencies,
                     condition4_activity_applied_for, condition5_no_major_expansion,
                     condition6_not_cert_ownership, condition7_misrepresentation, condition8_commencement_period,
                     condition9_revoked, condition10_provisional
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         if ($stmt = mysqli_prepare($link, $sql)) {
-            mysqli_stmt_bind_param($stmt, "sssssssssssssdssiiiiiiiiii",
-                $applicant_name, $developer_name, $developer_address, $location, $issue_date, $expiration_date, $clearance_number,
+            mysqli_stmt_bind_param($stmt, "sssssssssssssdssiiiiiiiiiii",
+                $applicant_name, $applicant_address, $developer_name, $developer_address, $project_location, $issue_date, $expiration_date, $clearance_number,
                 $project_name, $right_over_land, $land_area, $building_area, $decision,
                 $or_number, $amount_paid, $date_paid, $issued_at, $encoded_by_user_id,
                 $conditions['condition1'], $conditions['condition2'], $conditions['condition3'], $conditions['condition4'],
@@ -127,8 +128,8 @@ $condition_texts = [
     6 => "This Decision shall not be construed as a certification of this office as to the ownership by the applicant of land subject of this decision.",
     7 => "Any misrepresentation. false statement, or allegations material to the issuance of this decision shall be sufficient cause for its revocation.",
     8 => "This Decision shall be considered automatically revoked if project is not commenced within one (1) year from the date of decision.",
-    9 => "PROVISIONAL CLEARANCE ONLY.",
-    10 => "The Decision shall be considered automatically revoked if project is not commenced within one (1) year from the date of issuance of this Decision."
+    9 => "The Decision shall be considered automatically revoked if project is not commenced within one (1) year from the date of issuance of this Decision.",
+    10 => "PROVISIONAL CLEARANCE ONLY."
 ];
 
 ?>
@@ -139,11 +140,23 @@ $condition_texts = [
     <title>Add Locational Clearance</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        .wrapper { max-width: 900px; }
+        .wrapper { max-width: 900px; margin: 20px auto; }
         .form-container { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         .form-column { display: flex; flex-direction: column; gap: 15px; }
+        .form-column:first-child {
+            padding-right: 20px;
+            border-right: 1px solid #ddd;
+        }
         .full-width { grid-column: 1 / -1; }
     </style>
+    <script>
+        function toggleAllConditions(source) {
+            const checkboxes = document.querySelectorAll('.condition-checkbox');
+            for (let i = 0; i < checkboxes.length; i++) {
+                checkboxes[i].checked = source.checked;
+            }
+        }
+    </script>
 </head>
 <body>
     <div class="container">
@@ -171,6 +184,10 @@ $condition_texts = [
                             <input type="text" name="applicant_name" class="form-control" required>
                         </div>
                         <div class="form-group">
+                            <label>ADDRESS:</label>
+                            <input type="text" name="applicant_address" class="form-control">
+                        </div>
+                        <div class="form-group">
                             <label>NAME OF PROJECT:</label>
                             <input type="text" name="project_name" class="form-control" required>
                         </div>
@@ -190,8 +207,8 @@ $condition_texts = [
                             <input type="text" name="developer_address" class="form-control">
                         </div>
                         <div class="form-group">
-                            <label>LOCATION:</label>
-                            <input type="text" name="location" class="form-control" required>
+                            <label>PROJECT LOCATION:</label>
+                            <input type="text" name="project_location" class="form-control" required>
                         </div>
                         <div style="display:flex; gap:10px;">
                             <div class="form-group" style="flex:1;">
@@ -213,9 +230,13 @@ $condition_texts = [
 
                 <fieldset class="conditions-fieldset full-width" style="margin-top:20px;">
                     <legend>Conditions</legend>
-                    <!-- Tick all logic can be added here if needed -->
+                    <div class="condition-item">
+                        <input type="checkbox" id="tick_all_conditions" onclick="toggleAllConditions(this)">
+                        <label for="tick_all_conditions"><strong>Tick/Untick All</strong></label>
+                    </div>
+                    <hr>
                     <?php for ($i = 1; $i <= 10; $i++): ?>
-                        <div class="condition-item"><input type="checkbox" name="condition<?php echo $i; ?>" value="1"> <label><?php echo htmlspecialchars($condition_texts[$i] ?? 'Condition ' . $i); ?></label></div>
+                        <div class="condition-item"><input type="checkbox" class="condition-checkbox" name="condition<?php echo $i; ?>" value="1"> <label><?php echo htmlspecialchars($condition_texts[$i] ?? 'Condition ' . $i); ?></label></div>
                     <?php endfor; ?>
                 </fieldset>
 

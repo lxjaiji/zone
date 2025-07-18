@@ -109,7 +109,7 @@ $condition_texts = [
         <div class="two-column-layout">
             <div class="column column-left">
                 <div class="field-group"><div class="field-label">APPLICANT:</div><div class="field-value"><?php echo htmlspecialchars($permit['applicant_name']); ?></div></div>
-                <div class="field-group"><div class="field-label">ADDRESS:</div><div class="field-value"><?php /* Address of applicant is not a field, using developer for now */ echo htmlspecialchars($permit['developer_address']); ?></div></div>
+                <div class="field-group"><div class="field-label">ADDRESS:</div><div class="field-value"><?php echo htmlspecialchars($permit['applicant_address']); ?></div></div>
                 <div class="field-group"><div class="field-label">NAME OF PROJECT:</div><div class="field-value"><?php echo htmlspecialchars($permit['project_name']); ?></div></div>
                 <div class="field-group"><div class="field-label">RIGHT OVER LAND:</div><div class="field-value"><?php echo htmlspecialchars($permit['right_over_land']); ?></div></div>
             </div>
