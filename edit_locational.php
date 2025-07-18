@@ -42,8 +42,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $location = trim($_POST['location']);
     if(empty($location)) $errors[] = "Location is required.";
 
-    $issue_date = trim($_POST['issue_date']);
-    if(empty($issue_date)) $errors[] = "Issue date is required.";
+    $date_filed = trim($_POST['issue_date']); // The field is named issue_date on this form
+    if(empty($date_filed)) {
+        $errors[] = "Date of Issuance is required.";
+    } else {
+        $issue_date = $date_filed; // Set issue_date from the input
+    }
 
     $right_over_land = trim($_POST['right_over_land']);
     $land_area = trim($_POST['land_area']);

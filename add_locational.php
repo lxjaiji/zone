@@ -35,8 +35,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $location = trim($_POST['location']);
     if(empty($location)) $errors[] = "Location is required.";
 
-    $issue_date = trim($_POST['issue_date']);
-    if(empty($issue_date)) $errors[] = "Issue date is required.";
+    $date_filed = trim($_POST['date_filed']);
+    if(empty($date_filed)) {
+        $errors[] = "Date Filed is required.";
+    } else {
+        $issue_date = $date_filed; // Set issue_date from date_filed
+    }
 
     $right_over_land = trim($_POST['right_over_land']);
     $land_area = trim($_POST['land_area']);
@@ -146,8 +150,6 @@ $condition_texts = [
         <?php include 'navigation.php'; ?>
         <div class="wrapper">
             <h2>Add New Locational Clearance</h2>
-            <p>Date Filed: <input type="date" name="date_filed" form="locationalForm" class="form-control" style="width:auto; display:inline-block;" required></p>
-            <hr>
 
             <?php if (!empty($errors)): ?>
             <div class="alert alert-danger">
@@ -156,6 +158,11 @@ $condition_texts = [
             <?php endif; ?>
 
             <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post" id="locationalForm">
+                <div class="form-group">
+                    <label>Date Filed:</label>
+                    <input type="date" name="date_filed" class="form-control" required>
+                </div>
+                <hr>
                 <div class="form-container">
                     <!-- Column 1 -->
                     <div class="form-column">
