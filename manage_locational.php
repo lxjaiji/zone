@@ -14,7 +14,7 @@ $link = get_db_connection();
 
 // Fetch all locational clearances
 $locational_clearances = [];
-$sql = "SELECT id, clearance_number, applicant_name, project_type, date_filed, expiration_date FROM locational_clearances ORDER BY date_filed DESC, id DESC";
+$sql = "SELECT id, clearance_number, applicant_name, project_name, date_filed, expiration_date FROM locational_clearances ORDER BY date_filed DESC, id DESC";
 
 // Pagination variables
 $records_per_page = 10; // Or get from a config file
@@ -85,7 +85,7 @@ mysqli_close($link);
                 <tr>
                     <th>Clearance No.</th>
                     <th>Applicant Name</th>
-                    <th>Project Type</th>
+                    <th>Project Name</th>
                     <th>Date Filed</th>
                     <th>Expiration Date</th>
                     <th>Actions</th>
@@ -96,7 +96,7 @@ mysqli_close($link);
                 <tr>
                     <td><?php echo htmlspecialchars($lc['clearance_number']); ?></td>
                     <td><?php echo htmlspecialchars($lc['applicant_name']); ?></td>
-                    <td><?php echo htmlspecialchars($lc['project_type']); ?></td>
+                    <td><?php echo htmlspecialchars($lc['project_name']); ?></td>
                     <td><?php echo htmlspecialchars($lc['date_filed']); ?></td>
                     <td><?php echo htmlspecialchars($lc['expiration_date']); ?></td>
                     <td class="action-links">
