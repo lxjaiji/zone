@@ -22,7 +22,6 @@ $errors = [];
 // Processing form data when form is submitted
 if($_SERVER["REQUEST_METHOD"] == "POST"){
     $id = intval($_POST["id"]);
-    $signatory_name_post = trim($_POST['signatory_name']);
 
     // Validate Applicant Name
     $applicant_name = trim($_POST["applicant_name"]);
@@ -127,13 +126,11 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             // issue_date and expiration_date are derived from date_filed
             $certificate_number = $form_data['certificate_number'] ?? ''; // Get from hidden field
             $tax_declaration = $form_data['tax_declaration'] ?? '';
-            $project_type = $form_data['project_type'] ?? '';
             $project_location = $form_data['project_location'] ?? '';
             $purpose = $form_data['purpose'] ?? '';
             $zoning_classification = $form_data['zoning_classification'] ?? '';
             $fees_paid = $form_data['fees_paid'] ?? '';
             $or_number = $form_data['or_number'] ?? '';
-            $signatory_name = $form_data['signatory_name'] ?? '';
             unset($_SESSION['form_data']);
         } else {
             // If not from a failed POST, fetch from DB
@@ -154,7 +151,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                         $certificate_number = $row["certificate_number"];
                         $expiration_date = $row["expiration_date"];
                         $tax_declaration = $row["tax_declaration"];
-                        $project_type = $row["project_type"];
                         $project_location = $row["project_location"];
                         $purpose = $row["purpose"];
                         $zoning_classification = $row["zoning_classification"];

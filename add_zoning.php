@@ -124,7 +124,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         $sql = "INSERT INTO zoning_certificates (applicant_name, owner_name, address, date_filed, issue_date, certificate_number, expiration_date, tax_declaration, lot_no, land_area, project_location, purpose, zoning_classification, fees_paid, or_number, encoded_by_user_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         if($stmt = mysqli_prepare($link, $sql)){
-            mysqli_stmt_bind_param($stmt, "sssssssssssssdssi",
+            mysqli_stmt_bind_param($stmt, "ssssssssssssdsi",
                 $applicant_name, $owner_name, $address, $date_filed, $issue_date,
                 $certificate_number, $expiration_date, $tax_declaration, $lot_no, $land_area,
                 $project_location, $purpose, $zoning_classification, $fees_paid,
