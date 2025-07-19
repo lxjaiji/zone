@@ -129,7 +129,7 @@ mysqli_close($link);
         </div>
         <?php else: ?>
              <?php if(!isset($_SESSION['error_user_dash_lc'])): ?>
-                <p class="text-center" style="margin-top:20px;">No locational clearances found.</p>
+                <p class="text-center" style="margin-top:20px;">No locational clearances found. <a href="add_locational.php" class="btn btn-primary">Add New Clearance</a></p>
             <?php endif; ?>
         <?php endif; ?>
     </div>

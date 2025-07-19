@@ -52,6 +52,7 @@ $is_admin_nav = isset($_SESSION['is_admin']) && $_SESSION['is_admin'] === true;
         <a href="manage_zoning_user.php">Zoning Certificates</a>
         <a href="manage_locational_user.php">Locational Clearances</a>
         <a href="manage_fishing_permits_user.php">Fishing Permits</a>
+        <a href="change_password.php">Change Password</a>
     <?php endif; ?>
 
     <a href="logout.php" style="float:right;">Sign Out</a>

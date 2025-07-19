@@ -135,7 +135,7 @@ mysqli_close($link);
         </div>
         <?php else: ?>
             <?php if(!isset($_SESSION['error_user_dash'])): // Only show "no records" if there wasn't a DB error ?>
-                <p class="text-center" style="margin-top:20px;">No zoning certificates found.</p>
+                <p class="text-center" style="margin-top:20px;">No zoning certificates found. <a href="add_zoning.php" class="btn btn-primary">Add New Certificate</a></p>
             <?php endif; ?>
         <?php endif; ?>
     </div>

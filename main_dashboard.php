@@ -15,27 +15,62 @@ $chart_data = [];
 $sql_chart = "
     SELECT
         DATE_FORMAT(issue_date, '%Y-%m') AS issue_month,
+        'Zoning' AS type,
         COUNT(*) as count
-    FROM (
-        SELECT issue_date FROM zoning_certificates
-        UNION ALL
-        SELECT issue_date FROM locational_clearances
-    ) AS all_issuances
+    FROM zoning_certificates
     WHERE issue_date >= DATE_SUB(NOW(), INTERVAL 12 MONTH)
     GROUP BY issue_month
-    ORDER BY issue_month ASC;
+    UNION ALL
+    SELECT
+        DATE_FORMAT(issue_date, '%Y-%m') AS issue_month,
+        'Locational' AS type,
+        COUNT(*) as count
+    FROM locational_clearances
+    WHERE issue_date >= DATE_SUB(NOW(), INTERVAL 12 MONTH)
+    GROUP BY issue_month
+    UNION ALL
+    SELECT
+        DATE_FORMAT(issue_date, '%Y-%m') AS issue_month,
+        'Fishing' AS type,
+        COUNT(*) as count
+    FROM fishing_gear_permits
+    WHERE issue_date >= DATE_SUB(NOW(), INTERVAL 12 MONTH)
+    GROUP BY issue_month
+    ORDER BY issue_month ASC, type ASC;
 ";
 
-if($result_chart = mysqli_query($link, $sql_chart)) {
-    while($row_chart = mysqli_fetch_assoc($result_chart)) {
-        $chart_data[] = $row_chart;
-    }
+$results = mysqli_query($link, $sql_chart);
+$data = [];
+$labels = [];
+while($row = mysqli_fetch_assoc($results)) {
+    $labels[] = $row['issue_month'];
+    $data[$row['type']][$row['issue_month']] = $row['count'];
 }
+$labels = array_unique($labels);
+sort($labels);
+
+$datasets = [];
+$colors = ['rgba(54, 162, 235, 1)', 'rgba(255, 99, 132, 1)', 'rgba(75, 192, 192, 1)'];
+$i = 0;
+foreach ($data as $type => $values) {
+    $dataset = [
+        'label' => $type,
+        'data' => [],
+        'borderColor' => $colors[$i],
+        'backgroundColor' => str_replace('1)', '0.2)', $colors[$i]),
+        'fill' => true,
+    ];
+    foreach ($labels as $label) {
+        $dataset['data'][] = $values[$label] ?? 0;
+    }
+    $datasets[] = $dataset;
+    $i++;
+}
+
 mysqli_close($link);
 
-// Prepare data for JavaScript
-$chart_labels = json_encode(array_column($chart_data, 'issue_month'));
-$chart_values = json_encode(array_column($chart_data, 'count'));
+$chart_labels = json_encode($labels);
+$chart_datasets = json_encode($datasets);
 
 ?>
 <!DOCTYPE html>
@@ -100,19 +135,13 @@ $chart_values = json_encode(array_column($chart_data, 'count'));
     <script>
         const ctx = document.getElementById('issuanceChart');
         const chartLabels = <?php echo $chart_labels; ?>;
-        const chartValues = <?php echo $chart_values; ?>;
+        const chartDatasets = <?php echo $chart_datasets; ?>;
 
         new Chart(ctx, {
             type: 'line',
             data: {
                 labels: chartLabels,
-                datasets: [{
-                    label: '# of Issuances',
-                    data: chartValues,
-                    backgroundColor: 'rgba(54, 162, 235, 0.6)',
-                    borderColor: 'rgba(54, 162, 235, 1)',
-                    borderWidth: 1
-                }]
+                datasets: chartDatasets
             },
             options: {
                 scales: {

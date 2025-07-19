@@ -133,6 +133,15 @@ $username = htmlspecialchars($_SESSION["username"]);
                     <a href="manage_locational_user.php" class="btn-action btn-view">View List</a>
                 </div>
             </div>
+
+            <div class="dashboard-link-card">
+                <h3>Fishing Permits</h3>
+                <p>Encode a new permit or view existing ones.</p>
+                 <div class="actions-group">
+                    <a href="add_fishing_permit.php" class="btn-action btn-add">Encode New</a>
+                    <a href="manage_fishing_permits_user.php" class="btn-action btn-view">View List</a>
+                </div>
+            </div>
         </div>
 
         <?php
