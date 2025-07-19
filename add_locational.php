@@ -10,7 +10,7 @@ require_once "config.php";
 $link = get_db_connection();
 
 // Define variables
-$applicant_name = $developer_name = $developer_address = $project_name = "";
+$applicant_name = $developer_name = $developer_address = $project_name = $project_type = "";
 $right_over_land = $land_area = $building_area = $decision = "";
 $location = $issue_date = $or_number = $amount_paid = $date_paid = $issued_at = "";
 $encoded_by_user_id = $_SESSION["id"];
@@ -31,6 +31,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $developer_address = trim($_POST['developer_address']);
     $project_name = trim($_POST['project_name']);
     if(empty($project_name)) $errors[] = "Project Name is required.";
+
+    $project_type = trim($_POST['project_type']);
+    if(empty($project_type)) $errors[] = "Project Type is required.";
 
     $project_location = trim($_POST['project_location']);
     if(empty($project_location)) $errors[] = "Project Location is required.";
@@ -88,18 +91,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $applicant_address = trim($_POST['applicant_address']);
         $sql = "INSERT INTO locational_clearances (
                     applicant_name, applicant_address, developer_name, developer_address, project_location, issue_date, expiration_date, clearance_number,
-                    project_name, right_over_land, land_area, building_area, decision,
+                    project_name, project_type, right_over_land, land_area, building_area, decision,
                     or_number, amount_paid, date_paid, issued_at, encoded_by_user_id,
                     condition1_monitoring, condition2_non_compliance, condition3_other_agencies,
                     condition4_activity_applied_for, condition5_no_major_expansion,
                     condition6_not_cert_ownership, condition7_misrepresentation, condition8_commencement_period,
                     condition9_revoked, condition10_provisional
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         if ($stmt = mysqli_prepare($link, $sql)) {
             mysqli_stmt_bind_param($stmt, "sssssssssssssdssiiiiiiiiii",
                 $applicant_name, $applicant_address, $developer_name, $developer_address, $project_location, $issue_date, $expiration_date, $clearance_number,
-                $project_name, $right_over_land, $land_area, $building_area, $decision,
+                $project_name, $project_type, $right_over_land, $land_area, $building_area, $decision,
                 $or_number, $amount_paid, $date_paid, $issued_at, $encoded_by_user_id,
                 $conditions['condition1'], $conditions['condition2'], $conditions['condition3'], $conditions['condition4'],
                 $conditions['condition5'], $conditions['condition6'], $conditions['condition7'], $conditions['condition8'],
@@ -190,6 +193,10 @@ $condition_texts = [
                         <div class="form-group">
                             <label>NAME OF PROJECT:</label>
                             <input type="text" name="project_name" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label>PROJECT TYPE:</label>
+                            <input type="text" name="project_type" class="form-control" required>
                         </div>
                         <div class="form-group">
                             <label>RIGHT OVER LAND:</label>
