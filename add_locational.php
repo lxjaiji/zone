@@ -12,7 +12,7 @@ $link = get_db_connection();
 // Define variables
 $applicant_name = $developer_name = $developer_address = $project_name = "";
 $right_over_land = $land_area = $building_area = $decision = "";
-$location = $issue_date = $or_number = $fees_paid = $issued_at = "";
+$location = $issue_date = $or_number = $amount_paid = $date_paid = $issued_at = "";
 $encoded_by_user_id = $_SESSION["id"];
 $errors = [];
 
@@ -36,15 +36,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if(empty($project_location)) $errors[] = "Project Location is required.";
 
     $date_filed = trim($_POST['date_filed']);
-    if(empty($date_filed)) $errors[] = "Date Filed is required.";
-    $issue_date = $date_filed; // Set issue_date from date_filed
+    if(empty($date_filed)) {
+        $errors[] = "Date Filed is required.";
+    } else {
+        $issue_date = $date_filed; // Set issue_date from date_filed
+    }
 
     $right_over_land = trim($_POST['right_over_land']);
     $land_area = trim($_POST['land_area']);
     $building_area = trim($_POST['building_area']);
     $decision = trim($_POST['decision']);
     $or_number = trim($_POST['or_number']);
-    $fees_paid = trim($_POST['fees_paid']);
+    $amount_paid = trim($_POST['amount_paid']);
+    $date_paid = trim($_POST['date_paid']);
     $issued_at = trim($_POST['issued_at']);
 
     for ($i = 1; $i <= 10; $i++) {
@@ -85,18 +89,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $sql = "INSERT INTO locational_clearances (
                     applicant_name, applicant_address, developer_name, developer_address, project_location, date_filed, expiration_date, clearance_number,
                     project_name, right_over_land, land_area, building_area, decision,
-                    or_number, fees_paid, issued_at, encoded_by_user_id,
+                    or_number, amount_paid, date_paid, issued_at, encoded_by_user_id,
                     condition1_monitoring, condition2_non_compliance, condition3_other_agencies,
                     condition4_activity_applied_for, condition5_no_major_expansion,
                     condition6_not_cert_ownership, condition7_misrepresentation, condition8_commencement_period,
                     condition9_revoked, condition10_provisional
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         if ($stmt = mysqli_prepare($link, $sql)) {
-            mysqli_stmt_bind_param($stmt, "sssssssssssssdssiiiiiiiiii",
+            mysqli_stmt_bind_param($stmt, "sssssssssssssdssiiiiiiiiiii",
                 $applicant_name, $applicant_address, $developer_name, $developer_address, $project_location, $date_filed, $expiration_date, $clearance_number,
                 $project_name, $right_over_land, $land_area, $building_area, $decision,
-                $or_number, $fees_paid, $issued_at, $encoded_by_user_id,
+                $or_number, $amount_paid, $date_paid, $issued_at, $encoded_by_user_id,
                 $conditions['condition1'], $conditions['condition2'], $conditions['condition3'], $conditions['condition4'],
                 $conditions['condition5'], $conditions['condition6'],
                 $conditions['condition7'], $conditions['condition8'],
@@ -249,11 +253,15 @@ $condition_texts = [
                             <input type="text" name="or_number" class="form-control">
                         </div>
                          <div class="form-group">
-                            <label>Fees Paid</label>
-                            <input type="number" step="0.01" name="fees_paid" class="form-control">
+                            <label>Amount Paid</label>
+                            <input type="number" step="0.01" name="amount_paid" class="form-control">
                         </div>
                     </div>
                     <div class="form-column">
+                        <div class="form-group">
+                            <label>Date Paid</label>
+                            <input type="date" name="date_paid" class="form-control">
+                        </div>
                          <div class="form-group">
                             <label>Issued at</label>
                             <input type="text" name="issued_at" class="form-control">
