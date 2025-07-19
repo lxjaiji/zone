@@ -100,7 +100,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         if ($stmt = mysqli_prepare($link, $sql)) {
-            mysqli_stmt_bind_param($stmt, "ssssssssssssssdssiiiiiiiiii",
+            mysqli_stmt_bind_param($stmt, "sssssssssssssdssiiiiiiiiii",
                 $applicant_name, $applicant_address, $developer_name, $developer_address, $project_location, $issue_date, $expiration_date, $clearance_number,
                 $project_name, $project_type, $right_over_land, $land_area, $building_area, $decision,
                 $or_number, $amount_paid, $date_paid, $issued_at, $encoded_by_user_id,
