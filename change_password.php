@@ -96,17 +96,17 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                 <div class="form-group">
                     <label>Current Password</label>
                     <input type="password" name="current_password" class="form-control <?php echo (!empty($errors['current_password'])) ? 'is-invalid' : ''; ?>">
-                    <span class="invalid-feedback"><?php echo $errors['current_password']; ?></span>
+                    <span class="invalid-feedback"><?php echo $errors['current_password'] ?? ''; ?></span>
                 </div>
                 <div class="form-group">
                     <label>New Password</label>
                     <input type="password" name="new_password" class="form-control <?php echo (!empty($errors['new_password'])) ? 'is-invalid' : ''; ?>">
-                    <span class="invalid-feedback"><?php echo $errors['new_password']; ?></span>
+                    <span class="invalid-feedback"><?php echo $errors['new_password'] ?? ''; ?></span>
                 </div>
                 <div class="form-group">
                     <label>Confirm Password</label>
                     <input type="password" name="confirm_password" class="form-control <?php echo (!empty($errors['confirm_password'])) ? 'is-invalid' : ''; ?>">
-                    <span class="invalid-feedback"><?php echo $errors['confirm_password']; ?></span>
+                    <span class="invalid-feedback"><?php echo $errors['confirm_password'] ?? ''; ?></span>
                 </div>
                 <div class="form-group">
                     <input type="submit" class="btn btn-primary" value="Submit">
