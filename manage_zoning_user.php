@@ -23,7 +23,7 @@ $zoning_certificates_user = [];
 // For now, users can view all certificates.
 // To restrict to user-specific, schema needs applicant_user_id or similar.
 // Then query would be: "SELECT ... WHERE applicant_user_id = ?" with $_SESSION['id']
-$sql = "SELECT id, certificate_number, applicant_name, project_type, date_filed, expiration_date FROM zoning_certificates ORDER BY date_filed DESC, id DESC";
+$sql = "SELECT id, certificate_number, applicant_name, zoning_classification, date_filed, expiration_date FROM zoning_certificates ORDER BY date_filed DESC, id DESC";
 
 // Pagination variables (same as admin page)
 $records_per_page = 10;
@@ -95,7 +95,7 @@ mysqli_close($link);
                 <tr>
                     <th>Cert. No.</th>
                     <th>Applicant Name</th>
-                    <th>Project Type</th>
+                    <th>Zoning Classification</th>
                     <th>Date Filed</th>
                     <th>Expiration Date</th>
                     <th>Actions</th>
@@ -106,7 +106,7 @@ mysqli_close($link);
                 <tr>
                     <td><?php echo htmlspecialchars($cert['certificate_number']); ?></td>
                     <td><?php echo htmlspecialchars($cert['applicant_name']); ?></td>
-                    <td><?php echo htmlspecialchars($cert['project_type']); ?></td>
+                    <td><?php echo htmlspecialchars($cert['zoning_classification']); ?></td>
                     <td><?php echo htmlspecialchars($cert['date_filed']); ?></td>
                     <td><?php echo htmlspecialchars($cert['expiration_date']); ?></td>
                     <td class="action-links">
