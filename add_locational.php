@@ -36,11 +36,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if(empty($project_location)) $errors[] = "Project Location is required.";
 
     $date_filed = trim($_POST['date_filed']);
-    if(empty($date_filed)) {
-        $errors[] = "Date Filed is required.";
-    } else {
-        $issue_date = $date_filed; // Set issue_date from date_filed
-    }
+    if(empty($date_filed)) $errors[] = "Date Filed is required.";
+    $issue_date = $date_filed; // Set issue_date from date_filed
 
     $right_over_land = trim($_POST['right_over_land']);
     $land_area = trim($_POST['land_area']);
@@ -87,7 +84,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         $applicant_address = trim($_POST['applicant_address']);
         $sql = "INSERT INTO locational_clearances (
-                    applicant_name, applicant_address, developer_name, developer_address, project_location, issue_date, expiration_date, clearance_number,
+                    applicant_name, applicant_address, developer_name, developer_address, project_location, date_filed, expiration_date, clearance_number,
                     project_name, right_over_land, land_area, building_area, decision,
                     or_number, amount_paid, date_paid, issued_at, encoded_by_user_id,
                     condition1_monitoring, condition2_non_compliance, condition3_other_agencies,
@@ -98,7 +95,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         if ($stmt = mysqli_prepare($link, $sql)) {
             mysqli_stmt_bind_param($stmt, "sssssssssssssdssiiiiiiiiiii",
-                $applicant_name, $applicant_address, $developer_name, $developer_address, $project_location, $issue_date, $expiration_date, $clearance_number,
+                $applicant_name, $applicant_address, $developer_name, $developer_address, $project_location, $date_filed, $expiration_date, $clearance_number,
                 $project_name, $right_over_land, $land_area, $building_area, $decision,
                 $or_number, $amount_paid, $date_paid, $issued_at, $encoded_by_user_id,
                 $conditions['condition1'], $conditions['condition2'], $conditions['condition3'], $conditions['condition4'],
