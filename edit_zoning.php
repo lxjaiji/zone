@@ -13,7 +13,7 @@ $link = get_db_connection();
 
 // Define variables and initialize with empty values from DB or POST
 $applicant_name = $owner_name = $address = $date_filed = $issue_date = "";
-$certificate_number = $expiration_date = $tax_declaration = $project_type = "";
+$certificate_number = $expiration_date = $tax_declaration = "";
 $project_location = $purpose = $zoning_classification = $fees_paid = $or_number = "";
 $id = 0;
 
@@ -61,7 +61,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 
     // Validate Zoning Classification
     $zoning_classification = trim($_POST["zoning_classification"]);
-    if(empty($zoning_classification)){ $errors["zoning_classification"] = "Please select zoning classification."; }
+    if(empty($zoning_classification)){ $errors["zoning_classification"] = "Please enter zoning classification."; }
 
     // Validate Fees Paid
     $fees_paid = trim($_POST["fees_paid"]);
@@ -79,7 +79,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         $sql = "UPDATE zoning_certificates SET applicant_name=?, owner_name=?, address=?, date_filed=?, issue_date=?, expiration_date=?, tax_declaration=?, lot_no=?, land_area=?, project_location=?, purpose=?, zoning_classification=?, fees_paid=?, or_number=?, updated_at=CURRENT_TIMESTAMP WHERE id=?";
 
         if($stmt = mysqli_prepare($link, $sql)){
-            mysqli_stmt_bind_param($stmt, "sssssssssssssdssi",
+            mysqli_stmt_bind_param($stmt, "ssssssssssssdsi",
                 $applicant_name, $owner_name, $address, $date_filed, $issue_date,
                 $expiration_date, $tax_declaration, $lot_no, $land_area,
                 $project_location, $purpose, $zoning_classification, $fees_paid,
@@ -177,7 +177,15 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         exit;
     }
 }
-$zoning_classifications_enum = ['Residential', 'Commercial', 'Agro-Industrial', 'Agricultural', 'Institutional'];
+// Fetch existing zoning classifications for dropdown
+$zoning_classifications_enum = [];
+$sql_classifications = "SELECT DISTINCT zoning_classification FROM zoning_certificates ORDER BY zoning_classification";
+if($result = mysqli_query($link, $sql_classifications)){
+    while($row = mysqli_fetch_array($result)){
+        $zoning_classifications_enum[] = $row['zoning_classification'];
+    }
+    mysqli_free_result($result);
+}
 ?>
 
 <!DOCTYPE html>
@@ -262,12 +270,12 @@ $zoning_classifications_enum = ['Residential', 'Commercial', 'Agro-Industrial', 
                     </div>
                     <div class="form-group">
                         <label>Zoning Classification</label>
-                        <select name="zoning_classification" class="form-control <?php echo (!empty($errors['zoning_classification'])) ? 'is-invalid' : ''; ?>" required>
-                            <option value="">Select Classification...</option>
+                        <input type="text" name="zoning_classification" list="zoning_classifications_list" class="form-control <?php echo (!empty($errors['zoning_classification'])) ? 'is-invalid' : ''; ?>" value="<?php echo htmlspecialchars($zoning_classification); ?>" required>
+                        <datalist id="zoning_classifications_list">
                             <?php foreach($zoning_classifications_enum as $zc): ?>
-                            <option value="<?php echo $zc; ?>" <?php echo ($zoning_classification == $zc) ? 'selected' : ''; ?>><?php echo $zc; ?></option>
+                            <option value="<?php echo htmlspecialchars($zc); ?>">
                             <?php endforeach; ?>
-                        </select>
+                        </datalist>
                     </div>
                     <div class="form-group">
                         <label>Fees Paid (PHP)</label>

@@ -15,7 +15,7 @@ $link = get_db_connection();
 
 // Define variables and initialize with empty values
 $applicant_name = $owner_name = $address = $date_filed = $issue_date = "";
-$certificate_number = $expiration_date = $tax_declaration = $project_type = "";
+$certificate_number = $expiration_date = $tax_declaration = "";
 $project_location = $purpose = $zoning_classification = $fees_paid = $or_number = "";
 $encoded_by_user_id = $_SESSION["id"];
 
@@ -100,7 +100,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     // Validate Zoning Classification
     $zoning_classification = trim($_POST["zoning_classification"]);
     if(empty($zoning_classification)){
-        $errors["zoning_classification"] = "Please select zoning classification.";
+        $errors["zoning_classification"] = "Please enter zoning classification.";
     }
 
     // Validate Fees Paid
@@ -173,7 +173,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         $address = $form_data['address'] ?? '';
         $date_filed = $form_data['date_filed'] ?? '';
         $tax_declaration = $form_data['tax_declaration'] ?? '';
-        $project_type = $form_data['project_type'] ?? '';
         $project_location = $form_data['project_location'] ?? '';
         $purpose = $form_data['purpose'] ?? '';
         $zoning_classification = $form_data['zoning_classification'] ?? '';
@@ -183,7 +182,15 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         unset($_SESSION['form_data']);
     }
 }
-$zoning_classifications = ['Residential', 'Commercial', 'Agro-Industrial', 'Agricultural', 'Institutional'];
+// Fetch existing zoning classifications for dropdown
+$zoning_classifications = [];
+$sql_classifications = "SELECT DISTINCT zoning_classification FROM zoning_certificates ORDER BY zoning_classification";
+if($result = mysqli_query($link, $sql_classifications)){
+    while($row = mysqli_fetch_array($result)){
+        $zoning_classifications[] = $row['zoning_classification'];
+    }
+    mysqli_free_result($result);
+}
 ?>
 
 <!DOCTYPE html>
@@ -263,12 +270,12 @@ $zoning_classifications = ['Residential', 'Commercial', 'Agro-Industrial', 'Agri
                     </div>
                     <div class="form-group">
                         <label>Zoning Classification</label>
-                        <select name="zoning_classification" class="form-control <?php echo (!empty($errors['zoning_classification'])) ? 'is-invalid' : ''; ?>" required>
-                            <option value="">Select Classification...</option>
+                        <input type="text" name="zoning_classification" list="zoning_classifications_list" class="form-control <?php echo (!empty($errors['zoning_classification'])) ? 'is-invalid' : ''; ?>" value="<?php echo htmlspecialchars($zoning_classification); ?>" required>
+                        <datalist id="zoning_classifications_list">
                             <?php foreach($zoning_classifications as $zc): ?>
-                            <option value="<?php echo $zc; ?>" <?php echo ($zoning_classification == $zc) ? 'selected' : ''; ?>><?php echo $zc; ?></option>
+                            <option value="<?php echo htmlspecialchars($zc); ?>">
                             <?php endforeach; ?>
-                        </select>
+                        </datalist>
                     </div>
                     <div class="form-group">
                         <label>Fees Paid (PHP)</label>
