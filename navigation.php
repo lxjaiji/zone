@@ -44,6 +44,7 @@ $is_admin_nav = isset($_SESSION['is_admin']) && $_SESSION['is_admin'] === true;
             <div class="dropdown-content">
                 <a href="settings.php">Application Settings</a>
                 <a href="admin_dashboard.php">User Management</a>
+                <a href="change_password.php">Change Password</a>
             </div>
         </div>
     <?php else: ?>

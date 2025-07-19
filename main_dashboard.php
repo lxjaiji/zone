@@ -14,37 +14,37 @@ $link = get_db_connection();
 $chart_data = [];
 $sql_chart = "
     SELECT
-        DATE_FORMAT(issue_date, '%Y-%m') AS issue_month,
+        DATE_FORMAT(issue_date, '%Y-%m-%d') AS issue_day,
         'Zoning' AS type,
         COUNT(*) as count
     FROM zoning_certificates
-    WHERE issue_date >= DATE_SUB(NOW(), INTERVAL 12 MONTH)
-    GROUP BY issue_month
+    WHERE issue_date >= DATE_SUB(NOW(), INTERVAL 30 DAY)
+    GROUP BY issue_day
     UNION ALL
     SELECT
-        DATE_FORMAT(issue_date, '%Y-%m') AS issue_month,
+        DATE_FORMAT(issue_date, '%Y-%m-%d') AS issue_day,
         'Locational' AS type,
         COUNT(*) as count
     FROM locational_clearances
-    WHERE issue_date >= DATE_SUB(NOW(), INTERVAL 12 MONTH)
-    GROUP BY issue_month
+    WHERE issue_date >= DATE_SUB(NOW(), INTERVAL 30 DAY)
+    GROUP BY issue_day
     UNION ALL
     SELECT
-        DATE_FORMAT(issue_date, '%Y-%m') AS issue_month,
+        DATE_FORMAT(issue_date, '%Y-%m-%d') AS issue_day,
         'Fishing' AS type,
         COUNT(*) as count
     FROM fishing_gear_permits
-    WHERE issue_date >= DATE_SUB(NOW(), INTERVAL 12 MONTH)
-    GROUP BY issue_month
-    ORDER BY issue_month ASC, type ASC;
+    WHERE issue_date >= DATE_SUB(NOW(), INTERVAL 30 DAY)
+    GROUP BY issue_day
+    ORDER BY issue_day ASC, type ASC;
 ";
 
 $results = mysqli_query($link, $sql_chart);
 $data = [];
 $labels = [];
 while($row = mysqli_fetch_assoc($results)) {
-    $labels[] = $row['issue_month'];
-    $data[$row['type']][$row['issue_month']] = $row['count'];
+    $labels[] = $row['issue_day'];
+    $data[$row['type']][$row['issue_day']] = $row['count'];
 }
 $labels = array_unique($labels);
 sort($labels);
@@ -125,7 +125,7 @@ $chart_datasets = json_encode($datasets);
                 </form>
             </div>
             <div class="dashboard-card" id="chart-card">
-                <h3>Monthly Issuance Overview (Last 12 Months)</h3>
+                <h3>Daily Issuance Overview (Last 30 Days)</h3>
                 <canvas id="issuanceChart"></canvas>
             </div>
         </div>
